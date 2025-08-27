@@ -1,0 +1,89 @@
+:root {
+    --brand: #ff505e;
+    --text: #222;
+    --line: #ddd;
+}
+
+.profile {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 40px 16px;
+    text-align: center;
+}
+
+.profile__title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 28px;
+}
+
+.profile__avatar {
+    display: flex;
+    align-items: center;
+    /* 垂直中央揃え */
+    justify-content: center;
+    gap: 20px;
+    /* アイコンとボタンの間隔 */
+    margin-bottom: 32px;
+}
+
+.avatar--lg {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #ccc;
+    flex-shrink: 0;
+}
+.btn--outline {
+    background: #fff;
+    color: var(--brand);
+    border: 1.8px solid var(--brand);
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 6px 14px;
+    cursor: pointer;
+}
+
+.form-group {
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-size: 14px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.btn--primary {
+    background: var(--brand);
+    color: #fff;
+    font-weight: 700;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn--primary:hover {
+    opacity: 0.9;
+}
+
+.full {
+    width: 100%;
+}
+
+.error {
+    color: red;
+    font-size: 13px;
+    margin-top: 4px;
+}

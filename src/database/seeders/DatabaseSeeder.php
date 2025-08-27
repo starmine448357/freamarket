@@ -19,8 +19,13 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-         $this->call(ItemSeeder::class);
-        // 追加のダミー（必要なら）
-        // User::factory(10)->create(); // ← fakerはunique()を使うとより安全
+
+        // Seeder の実行順：カテゴリ → アイテム
+        $this->call([
+            CategorySeeder::class, // 先にカテゴリ
+            ItemSeeder::class,     // 既存のダミー商品
+        ]);
+
+        // ← ここでの ItemSeeder 単体呼び出しは不要（削除）
     }
 }

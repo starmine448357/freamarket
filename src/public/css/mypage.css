@@ -1,0 +1,170 @@
+/* ================================
+   Mypage Styles (改良版)
+   ================================ */
+
+:root {
+    --brand: #ff505e;
+    --text: #222;
+    --text-sub: #666;
+    --line: #ddd;
+    --bg-muted: #fafafa;
+}
+
+/* 全体 */
+.mypage {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+}
+
+/* ===== ヘッダー部分 ===== */
+.mypage__header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    /* 全体の間隔を広めに */
+    margin-bottom: 40px;
+}
+
+.avatar--lg {
+    width: 110px;
+    /* 大きく */
+    height: 110px;
+    border-radius: 50%;
+    background: #ccc;
+    flex-shrink: 0;
+}
+
+.mypage__info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 200px;
+    /* ユーザー名とボタンの間隔を広げる */
+}
+
+.mypage__name {
+    margin: 0;
+    font-size: 26px;
+    /* 大きく */
+    font-weight: 800;
+    color: var(--text);
+}
+
+/* プロフィール編集ボタン */
+.btn--outline {
+    display: inline-block;
+    background: #fff;
+    color: var(--brand);
+    border: 2px solid var(--brand);
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 10px 22px;
+    /* ボタンも少し大きめ */
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    text-decoration: none;
+}
+
+.btn--outline:hover {
+    background: #fff5f6;
+    color: var(--brand);
+}
+
+/* ===== タブ部分 ===== */
+.mypage__tabs {
+    display: flex;
+    gap: 40px;
+    margin: 24px 0;
+    border-bottom: 2px solid var(--line);
+}
+
+.tab {
+    position: relative;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 12px 0;
+    color: var(--text-sub);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.tab:hover {
+    color: var(--text);
+}
+
+/* アクティブ：赤文字＋下線 */
+.tab--active {
+    color: var(--brand);
+}
+
+.tab--active::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 3px;
+    background: var(--brand);
+    border-radius: 2px;
+}
+
+/* ===== 商品一覧部分 ===== */
+.mypage__items {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.item-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text);
+    transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.item-card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.item-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+/* まだ商品がない場合のメッセージ */
+.muted {
+    color: var(--text-sub);
+    font-size: 14px;
+    margin-top: 16px;
+    text-align: center;
+}
+
+/* ===== レスポンシブ ===== */
+@media (max-width: 600px) {
+    .mypage__header {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .mypage__info {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .mypage__items {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+}

@@ -1,0 +1,60 @@
+/* ===== タブ ===== */
+.tabs {
+    display: flex;
+    gap: 16px;
+    margin: 16px 0;
+    justify-content: flex-start;
+    /* 左寄せ */
+}
+
+/* タブのデザイン */
+.tab {
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.tab--active {
+    color: red;
+}
+
+/* ===== 区切り線 ===== */
+.divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 8px 0 16px 0;
+}
+
+/* ===== グリッド ===== */
+.grid--4 {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    /* 横4列 */
+    gap: 20px;
+    justify-content: flex-start;
+    /* 左寄せ */
+}
+
+/* ===== 商品画像 ===== */
+.item-img {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+}
+
+/* ===== 商品名 ===== */
+.item-title {
+    margin-top: 6px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* ===== リンクのリセット ===== */
+.item-link {
+    text-decoration: none;
+    color: inherit;
+    display: inline-block;
+}

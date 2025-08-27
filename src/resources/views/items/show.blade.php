@@ -1,11 +1,11 @@
 @extends('layouts.app')
 @section('title', $item->title.' | 商品詳細')
-@section('page_css')<link rel="stylesheet" href="{{ asset('css/items.css') }}">@endsection
+@section('page_css')<link rel="stylesheet" href="{{ asset('css/items-detail.css') }}">@endsection
 
 @section('content')
 <div class="detail">
   <div class="detail__left">
-    <img class="thumb thumb--lg" src="{{ $item->image_path ? asset('storage/'.$item->image_path) : asset('img/placeholder.png') }}" alt="">
+<img class="thumb thumb--lg" src="{{ $item->image_url }}" alt="">
   </div>
 
   <div class="detail__right">

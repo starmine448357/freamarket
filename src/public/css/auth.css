@@ -1,0 +1,173 @@
+.auth-body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", sans-serif;
+    background-color: #fff;
+}
+
+/* ヘッダー（黒背景＆ロゴ左寄せ） */
+.auth-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 16px 20px;
+    background-color: #000;
+}
+
+/* ロゴ */
+.auth-header__logo {
+    height: 40px;
+    width: auto;
+    display: block;
+}
+
+/* 中央のコンテナ */
+.auth-container {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 32px 24px;
+    background: #fff;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* タイトル */
+.auth-container h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 24px;
+}
+
+/* ラベル */
+.auth-container label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: left;
+    margin: 12px 0 6px;
+}
+
+/* 入力欄（ユーザー名・メール・パスワード共通） */
+.auth-container input[type="text"],
+.auth-container input[type="email"],
+.auth-container input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+/* ボタン */
+.auth-container button {
+    width: 100%;
+    margin: 20px 0 30px;
+    padding: 12px;
+    background-color: #ff5a5a;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.auth-container button:hover {
+    background-color: #e14a4a;
+}
+
+/* リンク（下線なし） */
+.link.link--blue {
+    text-decoration: none;
+    color: #0066cc;
+}
+
+/* タブレットサイズ (～850px) */
+@media (max-width: 850px) {
+    .auth-container {
+        max-width: 90%;
+        margin: 40px auto;
+        padding: 24px 16px;
+    }
+
+    .auth-container h1 {
+        font-size: 1.3rem;
+    }
+
+    .auth-container input[type="text"],
+    .auth-container input[type="email"],
+    .auth-container input[type="password"],
+    .auth-container button {
+        font-size: 0.95rem;
+    }
+}
+
+/* スマホサイズ (～480px) */
+@media (max-width: 480px) {
+    .auth-container {
+        max-width: 100%;
+        margin: 20px auto;
+        padding: 16px;
+        border-radius: 0;
+    }
+
+    .auth-container h1 {
+        font-size: 1.2rem;
+    }
+}
+
+/* 灰色ボタン */
+.btn--secondary {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    background-color: #e0e0e0;
+    /* 灰色 */
+    color: #000;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.btn--secondary:hover {
+    background-color: #d5d5d5;
+    /* ホバー時は少し濃い灰色 */
+}
+/* グレーのボタン */
+.btn--secondary {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    background: #e0e0e0;
+    color: #000;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.btn--secondary:hover {
+    background: #d5d5d5;
+}
+
+/* リンク見た目をbuttonにも適用 */
+.link.link--blue,
+button.link.link--blue.as-link {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+button.link.link--blue.as-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+}

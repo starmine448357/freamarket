@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str; 
 
 class Item extends Model
 {
@@ -54,4 +55,20 @@ class Item extends Model
     {
         return $this->purchase()->exists();
     }
+
+    // 画像URL（外部URL or storage or プレースホルダー）を返す
+public function getImageUrlAttribute(): string
+{
+    if ($this->image_path) {
+        // SeederのフルURL（http/https）はそのまま返す
+        if (Str::startsWith($this->image_path, ['http://', 'https://'])) {
+            return $this->image_path;
+        }
+        // 出品時に public ディスクへ保存した相対パス（例: items/xxx.jpg）
+        return asset('storage/'.$this->image_path);
+    }
+    // 何もなければダミー画像
+    return asset('img/placeholder.png');
+}
+
 }

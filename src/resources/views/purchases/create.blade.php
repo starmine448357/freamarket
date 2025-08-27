@@ -37,7 +37,7 @@
         <div>{{ auth()->user()->address }}</div>
         <div>{{ auth()->user()->building }}</div>
       </div>
-      <a class="link link--blue mt-xs" href="{{ route('profile.edit') }}#address-form">変更する</a>
+      <a class="link link--blue mt-xs" href="{{ route('mypage.profile.edit') }}#address-form">変更する</a>
 
       {{-- Controllerのバリデーションに合わせてhidden投入 --}}
       <input class="hidden" type="text" name="shipping_postal_code" value="{{ old('shipping_postal_code', auth()->user()->postal_code) }}">
