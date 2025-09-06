@@ -12,18 +12,16 @@ class Purchase extends Model
     protected $fillable = [
         'user_id',
         'item_id',
-        'price', // カラム構成に合わせて
+        'amount',            // ← price ではなく amount
+        'payment_method',
+        'status',
+        'paid_at',
+        // もしテーブルにあれば下も追加
+        'shipping_postal_code',
+        'shipping_address',
+        'shipping_building',
     ];
 
-    // 購入したユーザー
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    // 購入した商品
-    public function item()
-    {
-        return $this->belongsTo(Item::class);
-    }
+    public function user()  { return $this->belongsTo(User::class); }
+    public function item()  { return $this->belongsTo(Item::class); }
 }

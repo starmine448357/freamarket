@@ -1,183 +1,131 @@
-/* =========================
-   商品詳細（専用CSS）
-   ========================= */
+/* =======================
+   商品詳細レイアウト
+   ======================= */
 .detail {
-    display: grid;
-    grid-template-columns: 340px 1fr;
-    /* 左：画像 / 右：テキスト */
-    gap: 32px;
-    align-items: start;
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 960px) {
+  .detail { grid-template-columns: 1fr; }
 }
 
-/* 左：画像（正方形ベース） */
-.detail__left {
-    /* 固定表示したければ解除 */
-    /* position: sticky; top: 24px; */
+.thumb { display: block; border-radius: 8px; width: 100%; height: auto; }
+.thumb--lg { max-width: 420px; }
+
+.detail__title { font-size: 20px; font-weight: 700; margin: 4px 0; }
+.price { font-weight: 700; }
+.price--lg { font-size: 22px; }
+
+.muted { color:#6b7280; }
+
+.section { margin-top: 20px; }
+.label { font-size: 14px; color: #666; }
+.label--bold { font-weight: 700; color: #333; }
+.desc { white-space: pre-wrap; line-height: 1.7; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0; }
+.chip { background: #f3f4f6; border: 1px solid #e5e7eb; padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+.row { display: flex; align-items: center; gap: 8px; }
+.ml-sm { margin-left: 8px; }
+
+.actions .btn { margin-right: 8px; }
+
+/* =======================
+   メタ（☆ + 💬）
+   ======================= */
+.meta { display: flex; gap: 16px; align-items: center; }
+.meta--interactive .meta__group { display: inline-flex; gap: 12px; align-items: center; }
+.meta-link { display: inline-flex; align-items: center; gap: 6px; color:#374151; text-decoration: none; }
+.meta-link:hover { text-decoration: underline; }
+.meta-link .count, .star-btn .count { font-weight: 700; }
+
+/* 星ボタン（枠なしゴースト） */
+.star-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:0; margin:0; background:transparent; border:none; /* 枠・塗りなし */
+  color:#6b7280; cursor:pointer; line-height:1;
+}
+.star-btn:hover { color:#4b5563; }
+.star-btn.is-liked { color:#f59e0b; }              /* 押してる時は金色 */
+.star-btn.is-liked svg path { fill: currentColor; }
+
+/* 💬はシンプルに */
+.bubble { display:inline-block; line-height:1; }
+
+/* =======================
+   コメント（吹き出しUI）
+   ======================= */
+.comments { display: grid; gap: 12px; }
+
+.comment { display: flex; align-items: flex-start; gap: 10px; }
+
+.avatar.avatar--sm {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #e5e7eb; flex: 0 0 32px;
 }
 
-.detail .thumb--lg {
-    width: 320px;
-    height: 320px;
-    object-fit: cover;
-    display: block;
-    border-radius: 4px;
-    background: #e9e9e9;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, .06);
+.comment__meta {
+  font-size: 12px; color: #6b7280; margin-bottom: 4px;
+  display: flex; align-items: center; gap: 6px;
+}
+.badge--seller {
+  background: #eff6ff; color: #1d4ed8;
+  padding: 2px 8px; border-radius: 999px; font-size: 11px;
 }
 
-/* 右：情報エリア */
-.detail .detail__title {
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 1.3;
-    margin: 0 0 4px;
+/* 吹き出し本体 */
+.comment__text {
+  position: relative;
+  background: #f7f8fa;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 8px 12px;
+  max-width: 680px;
+  line-height: 1.6;
 }
 
-.detail .muted {
-    color: #777;
-    font-size: 12px;
+/* 吹き出しの“しっぽ”（外枠） */
+.comment__text::before {
+  content: "";
+  position: absolute;
+  left: -6px; top: 14px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent #e5e7eb transparent transparent;
 }
 
-.detail .price--lg {
-    font-size: 24px;
-    font-weight: 700;
-    margin-top: 6px;
+/* 吹き出しの“しっぽ”（中身） */
+.comment__text::after {
+  content: "";
+  position: absolute;
+  left: -5px; top: 14px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent #f7f8fa transparent transparent;
 }
 
-/* 購入ボタン（赤・横幅広め） */
-.detail .actions {
-    margin-top: 10px;
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
+/* =======================
+   コメントフォームの崩れ対策
+   ======================= */
+#comment-form .textarea { display:block; width:100%; margin: 6px 0 10px; }
+#comment-form .btn { margin-top: 2px; }
 
-.detail .actions .btn--primary {
-    background: #ff5a5a;
-    border: none;
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 6px;
-    font-weight: 700;
-    display: inline-block;
-    width: 360px;
-    /* .full を付けない場合の標準幅 */
-    text-align: center;
-}
+/* ボタン色（他CSSに負けないよう補強） */
+.btn--primary { background:#ef4444; color:#fff; border:none; }
+.btn--primary:hover { filter: brightness(0.95); }
 
-.detail .btn.full {
-    width: 100%;
-}
+/* ちょい余白 */
+.mt-xs { margin-top: 8px; }
+.mt-sm { margin-top: 12px; }
 
-/* .full が付いていれば横いっぱい */
-
-/* セクション */
-.detail .section {
-    margin-top: 24px;
-}
-
-.detail .label {
-    color: #666;
-    font-size: 12px;
-}
-
-.detail .label--bold {
-    color: #222;
-    font-weight: 700;
-    font-size: 16px;
-    margin-bottom: 8px;
-}
-
-.detail .desc {
-    white-space: pre-wrap;
-    line-height: 1.9;
-}
-
-/* カテゴリのチップ */
-.detail .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.detail .chip {
-    background: #eee;
-    color: #333;
-    border-radius: 9999px;
-    padding: 3px 10px;
-    font-size: 12px;
-}
-
-/* コメント */
-.detail .comments {
-    display: grid;
-    gap: 12px;
-}
-
-.detail .comment {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    padding: 10px 12px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    background: #fafafa;
-}
-
-.detail .avatar--sm {
-    width: 28px;
-    height: 28px;
-    flex: 0 0 28px;
-    border-radius: 50%;
-    background: #d9d9d9;
-}
-
-.detail .comment__text {
-    white-space: pre-wrap;
-}
-
-/* コメントフォーム */
-.detail .form.card {
-    border: 1px solid #eee;
-    border-radius: 8px;
-    background: #fff;
-}
-
-.detail .card--pad {
-    padding: 14px;
-}
-
-.detail .field .label {
-    display: block;
-    margin-bottom: 6px;
-}
-
-.detail .textarea {
-    width: 100%;
-}
-
-.detail .form .btn--primary {
-    background: #ff5a5a;
-    border: none;
-    border-radius: 6px;
-    font-weight: 700;
-}
-
-/* レスポンシブ */
-@media (max-width: 1024px) {
-    .detail {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .detail .thumb--lg {
-        width: 100%;
-        max-width: 520px;
-        height: auto;
-        aspect-ratio: 1 / 1;
-    }
-
-    .detail .actions .btn--primary {
-        width: 100%;
-    }
+a.btn,
+a.btn:link,
+a.btn:visited,
+a.btn:hover,
+a.btn:focus,
+a.btn:active {
+    text-decoration: none !important;
+    border-bottom: 0 !important;
 }

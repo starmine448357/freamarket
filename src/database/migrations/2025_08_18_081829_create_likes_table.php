@@ -11,9 +11,9 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('item_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['user_id','item_id']); // 重複いいね防止
         });
     }
-
     public function down(): void {
         Schema::dropIfExists('likes');
     }

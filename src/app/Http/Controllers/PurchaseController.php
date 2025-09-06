@@ -3,47 +3,117 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
-use App\Models\Purchase;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class PurchaseController extends Controller
 {
-    // 購入フォーム
+    /**
+     * 購入フォーム
+     */
     public function create(Item $item)
     {
-        abort_if($item->status === 'sold', 404);
+        // 404: すでに売却済み
+        if (($item->status ?? null) === 'sold') {
+            abort(404);
+        }
+        // 403: 自分の商品は買えない
+        if (Auth::id() === $item->user_id) {
+            abort(403);
+        }
+
         return view('purchases.create', compact('item'));
     }
 
-    // 購入処理（決済連携は後日）
-    public function store(Request $request, Item $item)
+    /**
+     * Stripe Checkout へ遷移
+     */
+    public function store(\Illuminate\Http\Request $request, Item $item)
     {
-        abort_if($item->status === 'sold', 404);
+        // 事前ガード
+        if (($item->status ?? null) === 'sold') {
+            abort(404);
+        }
+        if (Auth::id() === $item->user_id) {
+            abort(403);
+        }
 
+        // ===== 入力バリデーション =====
+        // 互換対応: 旧name="payment_method"（credit_card/convenience_store）も受けて正規化
         $validated = $request->validate([
-            'payment_method'       => ['required', Rule::in(['credit_card','convenience_store','bank_transfer'])],
-            'shipping_postal_code' => ['required','string','max:20'],
-            'shipping_address'     => ['required','string','max:255'],
-            'shipping_building'    => ['nullable','string','max:255'],
+            'payment' => ['nullable', Rule::in(['card', 'konbini'])],
+            'payment_method' => ['nullable', Rule::in(['credit_card', 'convenience_store'])],
         ]);
 
-        Purchase::create([
-            'user_id'              => Auth::id(),
-            'item_id'              => $item->id,
-            'payment_method'       => $validated['payment_method'],
-            'amount'               => $item->price,
-            'shipping_postal_code' => $validated['shipping_postal_code'],
-            'shipping_address'     => $validated['shipping_address'],
-            'shipping_building'    => $validated['shipping_building'] ?? null,
-            'status'               => 'pending',
-            'paid_at'              => null,
-        ]);
+        $payment = $validated['payment']
+            ?? (isset($validated['payment_method'])
+                ? ($validated['payment_method'] === 'credit_card' ? 'card' : 'konbini')
+                : null);
 
-        // 在庫状態を「sold」に
-        $item->update(['status' => 'sold']);
+        if (!$payment) {
+            return back()->withErrors(['payment' => '支払い方法を選択してください'])->withInput();
+        }
 
-        return redirect()->route('items.show', $item)->with('success', '購入を受け付けました。');
+        try {
+            // ===== Stripe Checkout セッション作成 =====
+            $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
+
+            $session = $stripe->checkout->sessions->create([
+                'mode' => 'payment',
+                'payment_method_types' => $payment === 'card' ? ['card'] : ['konbini'],
+                'customer_email' => optional(Auth::user())->email,
+                'line_items' => [[
+                    'price_data' => [
+                        'currency' => 'jpy',
+                        'unit_amount' => (int) $item->price, // 円
+                        'product_data' => [
+                            'name' => $item->title,
+                            // 画像URLはローカルだと外しておくのが無難
+                        ],
+                    ],
+                    'quantity' => 1,
+                ]],
+                'success_url' => route('purchases.success', $item) . '?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url'  => route('purchases.cancel',  $item),
+                'metadata'    => [
+                    'item_id'  => (string) $item->id,
+                    'buyer_id' => (string) Auth::id(),
+                    'payment'  => $payment,
+                ],
+            ]);
+
+            // Stripeの決済画面へ
+            return redirect()->away($session->url);
+
+        } catch (\Throwable $e) {
+            \Log::error('Stripe checkout error', [
+                'message' => $e->getMessage(),
+                'item_id' => $item->id,
+                'buyer_id'=> Auth::id(),
+                'payment' => $payment,
+            ]);
+
+            return back()
+                ->withErrors(['payment' => '決済の開始に失敗しました: ' . $e->getMessage()])
+                ->withInput();
+        }
+    }
+
+    /**
+     * 決済成功後（暫定）
+     * 本番では Webhook で checkout.session.completed を受けて
+     * Purchase作成・在庫更新(sold) を行うのが安全。
+     */
+    public function success(Item $item)
+    {
+        return view('purchases.success', compact('item'));
+    }
+
+    /**
+     * キャンセル時
+     */
+    public function cancel(Item $item)
+    {
+        return redirect()->route('items.show', $item->id);
     }
 }

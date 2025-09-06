@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <title>@yield('title', 'Freamarket')</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {{-- ★ 追加：CSRFメタ（fetchで必要） --}}
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
   @yield('page_css')
 </head>
@@ -43,5 +47,8 @@
   @if (session('success')) <div class="flash">{{ session('success') }}</div> @endif
   @yield('content')
 </main>
+
+{{-- ★ 追加：@push('scripts') をここで出力 --}}
+@stack('scripts')
 </body>
 </html>

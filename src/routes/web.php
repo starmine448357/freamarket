@@ -10,6 +10,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MyPageController;
+use App\Http\Controllers\TempImageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,11 +25,19 @@ Route::get('/', [ItemController::class, 'index'])->name('items.index');
 Route::get('/mylist', [ItemController::class, 'mylist'])->name('items.mylist');
 
 // 旧URL対応
-Route::get('/items', fn () => redirect()->route('items.index'), 301);
-Route::get('/items/{item}', fn ($item) => redirect("/item/{$item}"), 301);
+Route::permanentRedirect('/items', '/');
+Route::permanentRedirect('/items/{item}', '/item/{item}')->whereNumber('item');
 
 // 商品詳細ページ
-Route::get('/item/{item}', [ItemController::class, 'show'])->name('items.show');
+Route::get('/item/{item}', [ItemController::class, 'show'])
+    ->whereNumber('item')
+    ->name('items.show');
+
+// ★ コメント投稿（ログイン必須のみ／未ログインはloginへリダイレクト）
+Route::post('/item/{item}/comments', [CommentController::class, 'store'])
+    ->middleware('auth')
+    ->whereNumber('item')
+    ->name('comments.store');
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +68,10 @@ Route::post('/email/verification-notification', function (Request $request) {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'verified'])->group(function () {
+    // ★ 一時画像アップロード（プレビュー保持用）
+    Route::post('/items/image/temp', [TempImageController::class, 'store'])
+        ->name('items.image.temp');
+
     // マイページ（タブ切り替え対応）
     Route::get('/mypage', [MyPageController::class, 'show'])->name('mypage');
 
@@ -71,24 +84,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/sell', [ItemController::class, 'store'])->name('items.store');
 
     // 商品の編集・削除
-    Route::get('/item/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
-    Route::put('/item/{item}', [ItemController::class, 'update'])->name('items.update');
-    Route::delete('/item/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
+    Route::get('/item/{item}/edit', [ItemController::class, 'edit'])->whereNumber('item')->name('items.edit');
+    Route::put('/item/{item}', [ItemController::class, 'update'])->whereNumber('item')->name('items.update');
+    Route::delete('/item/{item}', [ItemController::class, 'destroy'])->whereNumber('item')->name('items.destroy');
 
     // いいね機能
-    Route::post('/item/{item}/like', [LikeController::class, 'store'])->name('likes.store');
-    Route::delete('/item/{item}/like', [LikeController::class, 'destroy'])->name('likes.destroy');
-
-    // コメント投稿
-    Route::post('/item/{item}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/item/{item}/like', [LikeController::class, 'store'])->whereNumber('item')->name('likes.store');
+    Route::delete('/item/{item}/like', [LikeController::class, 'destroy'])->whereNumber('item')->name('likes.destroy');
 
     // 購入処理
-    Route::get('/items/{item}/purchase', [PurchaseController::class, 'create'])->name('purchases.create');
-    Route::post('/items/{item}/purchase', [PurchaseController::class, 'store'])->name('purchases.store');
+    Route::get('/items/{item}/purchase', [PurchaseController::class, 'create'])->whereNumber('item')->name('purchases.create');
+    Route::post('/items/{item}/purchase', [PurchaseController::class, 'store'])->whereNumber('item')->name('purchases.store');
+
+    // 決済成功・キャンセル
+    Route::get('/items/{item}/purchase/success', [PurchaseController::class, 'success'])->whereNumber('item')->name('purchases.success');
+    Route::get('/items/{item}/purchase/cancel',  [PurchaseController::class, 'cancel'])->whereNumber('item')->name('purchases.cancel');
 
     // 購入時の住所入力
-    Route::get('/purchase/address/{item}', [PurchaseController::class, 'editAddress'])->name('purchases.address.edit');
-    Route::post('/purchase/address/{item}', [PurchaseController::class, 'updateAddress'])->name('purchases.address.update');
+    Route::get('/purchase/address/{item}', [PurchaseController::class, 'editAddress'])->whereNumber('item')->name('purchases.address.edit');
+    Route::post('/purchase/address/{item}', [PurchaseController::class, 'updateAddress'])->whereNumber('item')->name('purchases.address.update');
 });
 
 /*
