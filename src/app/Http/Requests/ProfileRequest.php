@@ -6,24 +6,24 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ProfileRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return auth()->check();
-    }
+    public function authorize(): bool { return true; }
 
     public function rules(): array
     {
         return [
-            // プロフィール画像：拡張子が.jpeg もしくは .png
-            // （サイズ制限が不要なら max は付けない）
-            'avatar' => ['nullable', 'file', 'mimes:jpeg,png'],
+            'avatar' => ['nullable', 'file', 'mimes:jpeg,png'], // 画像性のチェックだけでOKなら image に変更可
         ];
     }
 
     public function messages(): array
     {
         return [
-            'avatar.mimes' => 'プロフィール画像は .jpeg または .png を選択してください',
+            'avatar.mimes' => 'プロフィール画像は「.jpeg」または「.png」をアップロードしてください',
         ];
+    }
+
+    public function attributes(): array
+    {
+        return ['avatar' => 'プロフィール画像'];
     }
 }

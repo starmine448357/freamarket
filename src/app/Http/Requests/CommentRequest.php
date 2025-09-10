@@ -6,17 +6,12 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CommentRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        // ルート側で auth ミドルウェアを掛けているので true でもOKだが、
-        // 念のため現在の実装に合わせておく
-        return auth()->check();
-    }
+    public function authorize(): bool { return true; }
 
     public function rules(): array
     {
         return [
-            'content' => ['required', 'string', 'max:255'], // ← フィールド名を content に統一
+            'content' => ['required', 'string', 'max:255'],
         ];
     }
 
@@ -26,5 +21,10 @@ class CommentRequest extends FormRequest
             'content.required' => 'コメントを入力してください',
             'content.max'      => 'コメントは255文字以内で入力してください',
         ];
+    }
+
+    public function attributes(): array
+    {
+        return ['content' => '商品コメント'];
     }
 }

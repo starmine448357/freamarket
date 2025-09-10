@@ -10,11 +10,11 @@
 
 @section('content')
 <div class="tabs">
-  <a href="{{ route('items.index') }}"
+  <a href="{{ route('items.index', request()->query()) }}"
      class="tab {{ ($tab ?? 'recommend') === 'recommend' ? 'tab--active' : '' }}">
     おすすめ
   </a>
-  <a href="{{ route('items.mylist') }}"
+  <a href="{{ route('items.mylist', request()->query()) }}"
      class="tab {{ ($tab ?? 'recommend') === 'mylist' ? 'tab--active' : '' }}">
     マイリスト
   </a>
@@ -56,7 +56,8 @@
   </div>
 
   <div class="mt-md">
-    {{ $items->links('vendor.pagination.default') }}
+    {{-- ページネーションもクエリを保持 --}}
+    {{ $items->appends(request()->query())->links('vendor.pagination.default') }}
   </div>
 @endif
 @endsection

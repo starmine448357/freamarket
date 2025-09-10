@@ -6,10 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return true; // ログイン前なのでtrue
-    }
+    public function authorize(): bool { return true; }
 
     public function rules(): array
     {
@@ -22,11 +19,18 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'メールアドレスを入力してください',
-            'email.email'    => 'メールアドレスの形式が正しくありません',
-
+            'email.required'    => 'メールアドレスを入力してください',
+            'email.email'       => 'メールアドレスの形式が正しくありません',
             'password.required' => 'パスワードを入力してください',
             'password.min'      => 'パスワードは8文字以上で入力してください',
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'email'    => 'メールアドレス',
+            'password' => 'パスワード',
         ];
     }
 }

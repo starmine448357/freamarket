@@ -4,7 +4,18 @@
   <meta charset="UTF-8">
   <title>@yield('title', 'Freamarket')</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+
+  @php
+    $auth = public_path('css/auth.css');
+    $authVer = file_exists($auth) ? filemtime($auth) : time();
+
+    $app  = public_path('css/app.css');
+    $appVer  = file_exists($app) ? filemtime($app) : time();
+  @endphp
+  {{-- 共通 → 画面用の順で読み込み --}}
+  <link rel="stylesheet" href="{{ asset('css/app.css')  }}?v={{ $appVer  }}">
+  <link rel="stylesheet" href="{{ asset('css/auth.css') }}?v={{ $authVer }}">
+
   @yield('page_css')
 </head>
 <body class="auth-body">

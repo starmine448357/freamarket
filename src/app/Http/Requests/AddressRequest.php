@@ -6,30 +6,34 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class AddressRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return auth()->check();
-    }
+    public function authorize(): bool { return true; }
 
     public function rules(): array
     {
         return [
-            'name'        => ['required', 'string'],
-            // 郵便番号：ハイフンありの8文字（例：123-4567）
-            'postal_code' => ['required', 'string', 'size:8', 'regex:/^\d{3}-\d{4}$/'],
-            'address'     => ['nullable', 'string'],
-            'building'    => ['nullable', 'string'],
+            'name'        => ['required', 'string'/*, 'max:50'*/],
+            'postal_code' => ['required', 'regex:/^\d{3}-\d{4}$/'],
+            'address'     => ['nullable', 'string'/*, 'max:255'*/],
+            'building'    => ['nullable', 'string'/*, 'max:255'*/],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => 'お名前を入力してください',
+            'name.required'         => 'お名前を入力してください',
+            'postal_code.required'  => '郵便番号を入力してください',
+            'postal_code.regex'     => '郵便番号は「123-4567」の形式で入力してください',
+        ];
+    }
 
-            'postal_code.required' => '郵便番号を入力してください',
-            'postal_code.size'     => '郵便番号はハイフンを含めて8文字で入力してください（例：123-4567）',
-            'postal_code.regex'    => '郵便番号の形式が正しくありません（例：123-4567）',
+    public function attributes(): array
+    {
+        return [
+            'name'        => 'お名前',
+            'postal_code' => '郵便番号',
+            'address'     => '住所',
+            'building'    => '建物名',
         ];
     }
 }

@@ -109,7 +109,6 @@
     font-weight: 600;
 }
 
-/* 出品ボタン（専用） */
 /* 出品ボタン（白背景・黒文字・白フチ） */
 .btn--sell {
     display: inline-block;
@@ -132,6 +131,7 @@
     color: #000;
     border-color: #fff;
 }
+
 /* Main container */
 .container {
     padding: 24px 16px;
@@ -188,4 +188,19 @@
     outline: 2px solid #fff;
     outline-offset: 2px;
     box-shadow: none;
+}
+
+/* ====== Validation (both class names supported) ====== */
+.error,
+.form-error {
+    color: #ef4444;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.input.is-invalid,
+.form-input.is-invalid,
+.textarea.is-invalid,
+.select.is-invalid {
+    border-color: #ef4444;
 }

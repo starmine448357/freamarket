@@ -32,9 +32,10 @@
 
     {{-- ☆いいね（トグル）＋ 💬コメント数 --}}
     @php
+      // 将来的には controller 側で withCount(['likes','comments']) を推奨
       $liked         = auth()->check() ? $item->isLikedBy(auth()->user()) : false;
       $likesCount    = $item->likes_count    ?? $item->likes()->count();
-      $commentsCount = $item->comments_count ?? $item->comments->count();
+      $commentsCount = $item->comments_count ?? $item->comments()->count();
     @endphp
     <div class="meta meta--interactive mt-xs" aria-label="商品メタ情報">
       <div class="meta__group">
@@ -92,7 +93,7 @@
         </a>
 
       @else
-        <a class="btn btn--primary" href="{{ route('login') }}">ログインして購入</a>
+        <a class="btn btn--primary" href="{{ route('login') }}">購入手続きへ</a>
       @endif
     </div>
 
@@ -108,9 +109,11 @@
 
       <div class="label">カテゴリー</div>
       <div class="chips">
-        @foreach($item->categories as $cat)
+        @forelse($item->categories as $cat)
           <span class="chip">{{ $cat->name }}</span>
-        @endforeach
+        @empty
+          <span class="muted">—</span>
+        @endforelse
       </div>
 
       <div class="row mt-xs">
@@ -125,25 +128,25 @@
     <div class="section" id="comments" aria-labelledby="comments-title">
       <div class="label label--bold" id="comments-title">コメント（{{ $commentsCount }}）</div>
 
-      {{-- 一覧 --}}
-      <div class="comments">
-        @forelse($item->comments as $c)
-          <div class="comment">
-            <div class="avatar avatar--sm"></div>
-            <div>
-              <div class="comment__meta">
-                <span class="name">{{ $c->user->name }}</span>
-                @if($c->user_id === $item->user_id)
-                  <span class="badge badge--seller">出品者</span>
-                @endif
+      {{-- コメント一覧（0件ならリスト自体を表示しない） --}}
+      @if($commentsCount > 0)
+        <ul class="comment-list">
+          @foreach($item->comments as $comment)
+            <li class="comment">
+              <div class="comment__header">
+                <img
+                  class="comment__avatar"
+                  src="{{ $comment->user->avatar_url ?? asset('images/user-gray.png') }}"
+                  alt=""
+                >
+                <span class="comment__name">{{ $comment->user->name }}</span>
               </div>
-              <div class="comment__text">{{ $c->content }}</div>
-            </div>
-          </div>
-        @empty
-          <div class="muted">コメントはまだありません。</div>
-        @endforelse
-      </div>
+              <p class="comment__body">{{ $comment->content }}</p>
+              {{-- ↑ カラム名が body や text なら置き換え --}}
+            </li>
+          @endforeach
+        </ul>
+      @endif
 
       {{-- フォーム --}}
       <form id="comment-form" class="form mt-sm" method="POST" action="{{ route('comments.store', $item) }}">
