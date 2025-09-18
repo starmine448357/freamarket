@@ -136,8 +136,10 @@
               <div class="comment__header">
                 <img
                   class="comment__avatar"
-                  src="{{ $comment->user->avatar_url ?? asset('images/user-gray.png') }}"
-                  alt=""
+                  src="{{ $comment->user->profile_image_path
+                          ? asset('storage/'.$comment->user->profile_image_path)
+                          : asset('images/default-avatar.png') }}"
+                  alt="{{ $comment->user->name }}"
                 >
                 <span class="comment__name">{{ $comment->user->name }}</span>
               </div>
@@ -159,7 +161,7 @@
             name="content"
             rows="4"
             placeholder="コメントを入力してください"
-            maxlength="255"
+            
           >{{ old('content') }}</textarea>
           @error('content')<div class="error">{{ $message }}</div>@enderror
         </div>

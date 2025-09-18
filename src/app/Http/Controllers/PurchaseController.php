@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
+use App\Http\Requests\PurchaseRequest;
 
 class PurchaseController extends Controller
 {
@@ -28,31 +28,24 @@ class PurchaseController extends Controller
     /**
      * Stripe Checkout へ遷移
      */
-    public function store(\Illuminate\Http\Request $request, Item $item)
-    {
-        // 事前ガード
-        if (($item->status ?? null) === 'sold') {
-            abort(404);
-        }
-        if (Auth::id() === $item->user_id) {
-            abort(403);
-        }
+        public function store(PurchaseRequest $request, Item $item)
+        {
+            // 「完了」ボタンか「購入する」ボタンかを判定
+            if ($request->input('action') === 'confirm') {
+                // バリデーションに失敗すれば自動でリダイレクト & エラーメッセージ表示
+                // 成功したら「購入画面に戻す」だけ
+                return back()->withInput();
+            }
 
-        // ===== 入力バリデーション =====
-        // 互換対応: 旧name="payment_method"（credit_card/convenience_store）も受けて正規化
-        $validated = $request->validate([
-            'payment' => ['nullable', Rule::in(['card', 'konbini'])],
-            'payment_method' => ['nullable', Rule::in(['credit_card', 'convenience_store'])],
-        ]);
+            // ↓ここからは「購入する」ボタンが押されたときの処理（Stripe決済）
+            $validated = $request->validated();
+            $payment   = $validated['payment'];
+            $postal    = $validated['shipping_postal_code'];
+            $address   = $validated['shipping_address'];
+            $building  = $validated['shipping_building'] ?? '';
 
-        $payment = $validated['payment']
-            ?? (isset($validated['payment_method'])
-                ? ($validated['payment_method'] === 'credit_card' ? 'card' : 'konbini')
-                : null);
-
-        if (!$payment) {
-            return back()->withErrors(['payment' => '支払い方法を選択してください'])->withInput();
-        }
+            // Stripe 処理 …（省略）
+        
 
         try {
             // ===== Stripe Checkout セッション作成 =====
@@ -68,7 +61,6 @@ class PurchaseController extends Controller
                         'unit_amount' => (int) $item->price, // 円
                         'product_data' => [
                             'name' => $item->title,
-                            // 画像URLはローカルだと外しておくのが無難
                         ],
                     ],
                     'quantity' => 1,
@@ -76,9 +68,12 @@ class PurchaseController extends Controller
                 'success_url' => route('purchases.success', $item) . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url'  => route('purchases.cancel',  $item),
                 'metadata'    => [
-                    'item_id'  => (string) $item->id,
-                    'buyer_id' => (string) Auth::id(),
-                    'payment'  => $payment,
+                    'item_id'   => (string) $item->id,
+                    'buyer_id'  => (string) Auth::id(),
+                    'payment'   => $payment,
+                    'postal'    => $postal,
+                    'address'   => $address,
+                    'building'  => $building,
                 ],
             ]);
 
@@ -87,10 +82,10 @@ class PurchaseController extends Controller
 
         } catch (\Throwable $e) {
             \Log::error('Stripe checkout error', [
-                'message' => $e->getMessage(),
-                'item_id' => $item->id,
-                'buyer_id'=> Auth::id(),
-                'payment' => $payment,
+                'message'  => $e->getMessage(),
+                'item_id'  => $item->id,
+                'buyer_id' => Auth::id(),
+                'payment'  => $payment,
             ]);
 
             return back()

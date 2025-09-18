@@ -27,16 +27,18 @@
 /* ===== グリッド ===== */
 .grid--4 {
     display: grid;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* 4等分で幅いっぱい */
     gap: 20px;
-    justify-content: flex-start;
 }
 
 /* ===== 商品リンク/画像/テキスト ===== */
 .item-link {
     text-decoration: none;
     color: inherit;
-    display: inline-block;
+    display: block;
+    /* セル幅いっぱい */
+    width: 100%;
 }
 
 .item-thumb {
@@ -44,11 +46,15 @@
 }
 
 .item-img {
-    width: 200px;
-    height: 150px;
+    width: 100%;
+    /* セルにフィット */
+    aspect-ratio: 4 / 3;
+    /* 縦横比を維持 */
     object-fit: cover;
     border-radius: 4px;
     display: block;
+    height: auto;
+    /* 高さ固定を解除 */
 }
 
 .item-title {
@@ -68,16 +74,13 @@
     top: 8px;
     left: 8px;
     width: 84px;
-    /* 好みで調整 */
     transform: rotate(-12deg);
     z-index: 2;
     pointer-events: none;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .25));
 }
 
-/* 疑似要素版は使わないので無効化
-.item-thumb.is-sold::before { ... }
-/* プレビュー用の枠 */
+/* ===== プレビュー用の枠 ===== */
 .image_output {
     display: flex;
     flex-wrap: wrap;
@@ -88,7 +91,6 @@
 /* 各ファイル表示 */
 .reader_file {
     width: 200px;
-    /* ← 好きな大きさに調整してOK */
     height: 200px;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -101,7 +103,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* 縦横比を保ったまま枠にフィット */
     display: block;
 }
 
@@ -151,7 +152,6 @@
     margin: 0;
     padding: 0;
     list-style: none;
-    /* ← 丸ポチ消す */
 }
 
 .pager__item {
@@ -183,4 +183,23 @@
 .pager__sep {
     color: #999;
     padding: 0 4px;
+}
+
+/* ===== レスポンシブ対応 ===== */
+@media (max-width: 1024px) {
+    .grid--4 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .grid--4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .grid--4 {
+        grid-template-columns: 1fr;
+    }
 }

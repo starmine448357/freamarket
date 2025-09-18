@@ -3,42 +3,41 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class TempImageController extends Controller
 {
     /**
-     * 画像の一時アップロード
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * 商品画像を一時保存（プレビュー用）
      */
     public function store(Request $request)
     {
-        // バリデーション
-        $request->validate([
-            'image' => ['required', 'file', 'mimes:jpeg,png', 'max:5120'], // 5MBまで
-        ]);
-
-        $file = $request->file('image');
-        $ext = $file->getClientOriginalExtension();
-        $name = Str::uuid()->toString() . '.' . $ext;
-
-        // 保存先ディレクトリを保証（無ければ作成）
-        if (!Storage::exists('public/temp')) {
-            Storage::makeDirectory('public/temp');
+        if (!$request->hasFile('image')) {
+            return response()->json(['error' => 'ファイルが選択されていません'], 422);
         }
 
-        // public/temp に保存（storage:link 済み前提）
-        $file->storeAs('public/temp', $name);
+        $file = $request->file('image');
 
-        // セッションにファイル名を保持（エラー時の復元に利用）
-        session()->put('temp_image', $name);
+        if (!$file->isValid()) {
+            return response()->json(['error' => 'アップロードに失敗しました'], 422);
+        }
+
+        // 保存先ディレクトリを作成
+        Storage::disk('public')->makeDirectory('temp');
+
+        // ランダムなファイル名を生成
+        $filename = Str::random(40) . '.' . $file->getClientOriginalExtension();
+
+        // public/temp に保存
+        $file->storeAs('temp', $filename, 'public');
+
+        // セッションに保持
+        session(['temp_image' => $filename]);
 
         return response()->json([
-            'filename' => $name,
-            'url'      => asset('storage/temp/' . $name),
+            'filename' => $filename,
+            'url'      => Storage::disk('public')->url("temp/{$filename}"),
         ]);
     }
 }

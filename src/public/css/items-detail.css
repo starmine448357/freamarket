@@ -307,3 +307,13 @@ a.btn:active {
   text-decoration: none !important;
   border-bottom: 0 !important;
 }
+
+.comment__avatar {
+  width: 48px;
+  /* ← デフォルトより大きめ */
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+  /* 名前との間隔 */
+}

@@ -71,19 +71,17 @@
     font-size: 14px;
     color: #222;
     margin-bottom: 8px;
+    display: block;
 }
 
 .label--bold {
     font-weight: 800;
 }
 
-/* ドロップダウン（▼） */
+/* ドロップダウン */
 .select {
-    width: 320px;
-    max-width: 100%;
+    width: 100%;
     appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     font-size: 14px;
     color: #222;
     padding: 12px 40px 12px 14px;
@@ -143,34 +141,102 @@
     opacity: 0.92;
 }
 
+.btn--outline {
+    background: #f5f5f5;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
 .full {
     width: 100%;
 }
 
-/* 住所・リンク */
-.address {
-    margin-top: 8px;
-    line-height: 1.7;
+/* 住所カード */
+.address-card {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 6px;
     font-size: 14px;
+    line-height: 1.6;
 }
 
+/* 配送先入力フォーム */
+/* 配送先入力フォーム */
+.address-form {
+    background: #fff;
+    /* ページ背景と同じ白 */
+    border: none;
+    /* 枠線なし */
+    border-radius: 0;
+    /* 角丸もなし */
+    padding: 0;
+    /* 内側の余白も削除 */
+    margin-top: 10px;
+}
+
+.address-form label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+    display: block;
+    margin: 8px 0 4px;
+}
+
+.address-form input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.address-form .error {
+    color: #e63946;
+    font-size: 12px;
+    margin: 4px 0 8px 0;
+}
+
+/* 操作ボタン（完了・戻る） */
+.address-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.address-actions .btn--small {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+/* 配送先カード（表示時） */
+.address-card {
+    background: #fff;
+    /* ページ背景と同じ */
+    border: none;
+    /* 枠を消す */
+    padding: 0;
+    /* 余白も消す */
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* 配送先リンク（青文字＋ホバー下線） */
 .link--blue {
-    color: #1890ff;
+    color: #0073cc;
     text-decoration: none;
     font-size: 13px;
+    cursor: pointer;
 }
 
 .link--blue:hover {
     text-decoration: underline;
 }
-
-/* エラー表示 */
-.error {
-    margin-top: 6px;
-    color: #ff505e;
-    font-size: 13px;
-}
-
 /* レスポンシブ */
 @media (max-width: 860px) {
     .checkout {

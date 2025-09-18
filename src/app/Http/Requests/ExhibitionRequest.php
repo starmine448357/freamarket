@@ -6,17 +6,21 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ExhibitionRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
     public function rules(): array
     {
         return [
-            'title'       => ['required', 'string', 'max:255'], // DB列想定で max 付与。厳密仕様なら max を外す
+            'title'       => ['required', 'string'],
+            'brand'       => ['nullable', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:255'],
             'image'       => ['required', 'file', 'mimes:jpeg,png'],
             'categories'  => ['required', 'array', 'min:1'],
             'categories.*'=> ['integer', 'exists:categories,id'],
-            'condition'   => ['required'/*, Rule::in(['new','like_new','used','bad'])*/],
+            'condition'   => ['required'],
             'price'       => ['required', 'integer', 'min:0'],
         ];
     }
@@ -25,7 +29,7 @@ class ExhibitionRequest extends FormRequest
     {
         return [
             'title.required'        => '商品名を入力してください',
-            'title.max'             => '商品名は255文字以内で入力してください',
+            'brand.max'             => 'ブランド名は255文字以内で入力してください',
             'description.required'  => '商品説明を入力してください',
             'description.max'       => '商品説明は255文字以内で入力してください',
             'image.required'        => '商品画像をアップロードしてください',
@@ -45,6 +49,7 @@ class ExhibitionRequest extends FormRequest
     {
         return [
             'title'       => '商品名',
+            'brand'       => 'ブランド名',
             'description' => '商品説明',
             'image'       => '商品画像',
             'categories'  => '商品のカテゴリー',

@@ -6,15 +6,18 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
     public function rules(): array
     {
         return [
-            'name'                  => ['required', 'string', 'max:255'],  // ← ここ追加！
+            'name'                  => ['required', 'string', 'max:255'],
             'email'                 => ['required', 'email', 'unique:users,email'],
             'password'              => ['required', 'string', 'min:8', 'confirmed'],
-            'password_confirmation' => ['required', 'string', 'min:8'],
+            'password_confirmation' => ['required'], // ★ min:8 は不要
         ];
     }
 
@@ -32,14 +35,13 @@ class RegisterRequest extends FormRequest
             'password.confirmed'             => 'パスワードと一致しません',
 
             'password_confirmation.required' => '確認用パスワードを入力してください',
-            'password_confirmation.min'      => '確認用パスワードは8文字以上で入力してください',
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'name'                  => 'ユーザー名',   // ← フォームに合わせて「ユーザー名」
+            'name'                  => 'お名前',
             'email'                 => 'メールアドレス',
             'password'              => 'パスワード',
             'password_confirmation' => '確認用パスワード',

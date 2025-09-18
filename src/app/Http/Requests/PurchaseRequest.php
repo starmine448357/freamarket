@@ -6,30 +6,40 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class PurchaseRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
     public function rules(): array
     {
         return [
-            'payment'    => ['required'],             // 例: in:card,convenience を追加可
-            'address_id' => ['required', 'integer'],  // 必要なら exists:addresses,id など追加
+            'payment'              => ['required'],
+            'shipping_postal_code' => ['required', 'regex:/^\d{3}-\d{4}$/'],
+            'shipping_address'     => ['required', 'string'],
+            'shipping_building'    => ['nullable', 'string'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'payment.required'    => '支払い方法を選択してください',
-            'address_id.required' => '配送先を選択してください',
-            'address_id.integer'  => '配送先の指定が不正です',
+            'payment.required'              => '支払い方法を選択してください',
+
+            'shipping_postal_code.required' => '郵便番号を入力してください',
+            'shipping_postal_code.regex'    => '郵便番号は「123-4567」の形式で入力してください',
+
+            'shipping_address.required'     => '住所を入力してください',
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'payment'    => '支払い方法',
-            'address_id' => '配送先',
+            'payment'              => '支払い方法',
+            'shipping_postal_code' => '郵便番号',
+            'shipping_address'     => '住所',
+            'shipping_building'    => '建物名',
         ];
     }
 }

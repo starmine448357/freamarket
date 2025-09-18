@@ -21,7 +21,7 @@ return new class extends Migration {
                   ->onDelete('cascade');
 
             // コメント本文
-            $table->string('content', 255);
+            $table->string('content');
 
             $table->timestamps();
         });

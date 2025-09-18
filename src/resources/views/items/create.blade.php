@@ -156,7 +156,7 @@
     const file = e.target.files?.[0];
     if (!file) { hidden.value = ''; clearPreview(); return; }
 
-    // ① ローカル即時プレビュー（タイトル直下に表示される）
+    // ① ローカル即時プレビュー
     addLocalPreview(file);
 
     // ② 一時アップロード
@@ -174,7 +174,7 @@
     }
   });
 
-  // 既に一時画像がある場合は枠を表示状態に（画面再表示対応）
+  // 再表示対応：hidden に値があれば枠を表示
   if (hidden && hidden.value) {
     wrap && wrap.classList.add('is-active');
   }

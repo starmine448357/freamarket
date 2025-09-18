@@ -6,7 +6,6 @@ use App\Models\Item;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\ExhibitionRequest;
@@ -14,15 +13,17 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ItemController extends Controller
 {
-    /** 共通フィルタ適用（商品名のみ検索） */
+    /**
+     * 検索・絞り込み条件をクエリに適用
+     */
     private function applyFilters(Builder $items, Request $request): Builder
     {
-        $q         = trim((string) $request->input('q', ''));   // キーワード（titleのみ）
-        $category  = $request->input('category');               // カテゴリID
-        $min       = $request->input('min');                    // 最低価格
-        $max       = $request->input('max');                    // 最高価格
-        $condition = $request->input('condition');              // new|like_new|used|bad
-        $unsold    = $request->boolean('unsold');               // 在庫のみ
+        $q         = trim((string) $request->input('q', ''));
+        $category  = $request->input('category');
+        $min       = $request->input('min');
+        $max       = $request->input('max');
+        $condition = $request->input('condition');
+        $unsold    = $request->boolean('unsold');
 
         if ($q !== '') {
             $items->where('title', 'like', "%{$q}%");
@@ -31,72 +32,77 @@ class ItemController extends Controller
             $items->whereHas('categories', fn ($cq) => $cq->where('categories.id', $category));
         }
         if ($min !== null && $min !== '') {
-            $items->where('price', '>=', (int)$min);
+            $items->where('price', '>=', (int) $min);
         }
         if ($max !== null && $max !== '') {
-            $items->where('price', '<=', (int)$max);
+            $items->where('price', '<=', (int) $max);
         }
         if ($condition) {
             $items->where('condition', $condition);
         }
         if ($unsold) {
-            // status で在庫管理している想定。購入有無で見るなら whereDoesntHave('purchase') に差し替え。
             $items->where('status', 'selling');
         }
 
         return $items;
     }
 
-    /** 商品一覧（検索対応：商品名のみ） */
+    /**
+     * 商品一覧
+     */
     public function index(Request $request)
     {
         $items = Item::query()
+            ->where('user_id', '!=', Auth::id())
             ->with(['categories', 'purchase'])
             ->latest();
 
         $this->applyFilters($items, $request);
 
         $items = $items->paginate(12)->appends($request->query());
-
         $categories = Category::select('id', 'name')->orderBy('name')->get();
 
         return view('items.index', [
             'items'      => $items,
             'tab'        => 'recommend',
             'categories' => $categories,
-            'filters'    => $request->only(['q','category','min','max','condition','unsold']),
+            'filters'    => $request->only(['q', 'category', 'min', 'max', 'condition', 'unsold']),
         ]);
     }
 
-    /** マイリスト（検索条件を保持して適用） */
+    /**
+     * マイリスト
+     */
     public function mylist(Request $request)
     {
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
-
         $items = Item::query()
             ->with(['categories', 'purchase'])
-            ->whereHas('likes', fn ($q) => $q->where('user_id', Auth::id()))
-            ->where('user_id', '!=', Auth::id())   // 自分の出品は除外
             ->latest();
+
+        if (Auth::check()) {
+            $items->whereHas('likes', fn ($q) => $q->where('user_id', Auth::id()))
+                  ->where('user_id', '!=', Auth::id());
+        } else {
+            // 未ログイン時は空一覧
+            $items->whereRaw('1 = 0');
+        }
 
         $this->applyFilters($items, $request);
 
         $items = $items->paginate(12)->appends($request->query());
-
-        // マイリストでも検索フォームを出すならカテゴリを渡す
         $categories = Category::select('id', 'name')->orderBy('name')->get();
 
         return view('items.index', [
             'items'      => $items,
             'tab'        => 'mylist',
             'categories' => $categories,
-            'filters'    => $request->only(['q','category','min','max','condition','unsold']),
+            'filters'    => $request->only(['q', 'category', 'min', 'max', 'condition', 'unsold']),
         ]);
     }
 
-    /** 商品詳細 */
+    /**
+     * 商品詳細
+     */
     public function show(Item $item)
     {
         $item->load(['user', 'categories', 'comments.user', 'likes'])
@@ -109,7 +115,9 @@ class ItemController extends Controller
         return view('items.show', compact('item', 'liked'));
     }
 
-    /** 出品フォーム */
+    /**
+     * 出品フォーム表示
+     */
     public function create()
     {
         $names = [
@@ -126,7 +134,9 @@ class ItemController extends Controller
         return view('items.create', compact('categories'));
     }
 
-    /** 出品登録 */
+    /**
+     * 出品登録
+     */
     public function store(ExhibitionRequest $request)
     {
         $validated = $request->validated();
@@ -137,15 +147,19 @@ class ItemController extends Controller
             $path = null;
             $tempName = trim((string) $request->input('temp_image', ''));
 
+            // temp から本保存へ移動
             if ($tempName !== '' && Storage::disk('public')->exists("temp/{$tempName}")) {
                 if (Storage::disk('public')->move("temp/{$tempName}", "images/{$tempName}")) {
                     $path = "images/{$tempName}";
                     session()->forget('temp_image');
                 }
             }
+
+            // 通常アップロード
             if ($path === null && $request->hasFile('image')) {
                 $path = $request->file('image')->store('images', 'public');
             }
+
             if ($path === null) {
                 return back()->withErrors(['image' => '画像が保存されていません'])->withInput();
             }
@@ -163,11 +177,13 @@ class ItemController extends Controller
 
             $item->categories()->sync($validated['categories']);
 
-            return redirect()->route('items.index');
+            return redirect()->route('items.index')->with('status', '商品を出品しました！');
         });
     }
 
-    /** 編集フォーム */
+    /**
+     * 編集フォーム表示
+     */
     public function edit(Item $item)
     {
         $this->authorize('update', $item);
@@ -178,23 +194,13 @@ class ItemController extends Controller
         return view('items.edit', compact('item', 'categories', 'selected'));
     }
 
-    /** 更新 */
-    public function update(Request $request, Item $item)
+    /**
+     * 商品更新
+     */
+    public function update(ExhibitionRequest $request, Item $item)
     {
         $this->authorize('update', $item);
-
-        $validated = $request->validate([
-            'title'        => ['required', 'string', 'max:255'],
-            'brand'        => ['nullable', 'string', 'max:255'],
-            'description'  => ['nullable', 'string', 'max:255'],
-            'price'        => ['required', 'integer', 'min:0', 'max:9999999'],
-            'condition'    => ['required', Rule::in(['new', 'like_new', 'used'])],
-            'status'       => ['required', Rule::in(['selling', 'sold'])],
-            'temp_image'   => ['nullable','string'],
-            'image'        => ['nullable', 'image', 'mimes:jpeg,png', 'max:4096'],
-            'categories'   => ['nullable', 'array'],
-            'categories.*' => ['integer', 'exists:categories,id'],
-        ]);
+        $validated = $request->validated();
 
         return DB::transaction(function () use ($request, $item, $validated) {
             Storage::disk('public')->makeDirectory('images');
@@ -202,6 +208,7 @@ class ItemController extends Controller
             $replaced = false;
             $tempName = trim((string) $request->input('temp_image', ''));
 
+            // temp から差し替え
             if ($tempName !== '' && Storage::disk('public')->exists("temp/{$tempName}")) {
                 if (!empty($item->image_path)) {
                     Storage::disk('public')->delete($item->image_path);
@@ -213,6 +220,7 @@ class ItemController extends Controller
                 }
             }
 
+            // 通常アップロード差し替え
             if (!$replaced && $request->hasFile('image')) {
                 if (!empty($item->image_path)) {
                     Storage::disk('public')->delete($item->image_path);
@@ -223,19 +231,21 @@ class ItemController extends Controller
             $item->fill([
                 'title'       => $validated['title'],
                 'brand'       => $validated['brand'] ?? null,
-                'description' => $validated['description'] ?? null,
+                'description' => $validated['description'],
                 'price'       => $validated['price'],
                 'condition'   => $validated['condition'],
-                'status'      => $validated['status'],
+                'status'      => $validated['status'] ?? 'selling',
             ])->save();
 
             $item->categories()->sync($validated['categories'] ?? []);
 
-            return redirect()->route('items.show', $item);
+            return redirect()->route('items.show', $item)->with('status', '商品情報を更新しました');
         });
     }
 
-    /** 削除 */
+    /**
+     * 商品削除
+     */
     public function destroy(Item $item)
     {
         $this->authorize('delete', $item);
@@ -247,6 +257,6 @@ class ItemController extends Controller
         $item->categories()->detach();
         $item->delete();
 
-        return redirect()->route('items.index');
+        return redirect()->route('items.index')->with('status', '商品を削除しました');
     }
 }

@@ -13,11 +13,22 @@
     @method('PUT')
 
     {{-- アイコン画像 --}}
-    <div class="profile__avatar">
-      <div class="avatar avatar--lg"></div>
-      <label for="image" class="btn btn--outline">画像を選択する</label>
-      <input type="file" name="image" id="image" class="hidden" accept="image/png,image/jpeg">
-      @error('image')<div class="error">{{ $message }}</div>@enderror
+    <div class="profile__avatar center">
+      {{-- 現在の画像プレビュー --}}
+      <img 
+        id="avatar-preview"
+        src="{{ auth()->user()->profile_image_path 
+                ? asset('storage/'.auth()->user()->profile_image_path) 
+                : asset('images/default-avatar.png') }}" 
+        alt="" 
+        class="avatar avatar--lg"
+        style="width:120px;height:120px;border-radius:50%;object-fit:cover">
+
+      <div class="mt-sm">
+        <label for="profile_image" class="btn btn--outline">画像を選択する</label>
+        <input type="file" name="profile_image" id="profile_image" class="hidden" accept="image/png,image/jpeg">
+      </div>
+      @error('profile_image')<div class="error mt-xs">{{ $message }}</div>@enderror
     </div>
 
     {{-- ユーザー名 --}}
@@ -52,4 +63,18 @@
     <button type="submit" class="btn btn--primary full">更新する</button>
   </form>
 </div>
+
+{{-- プレビュー用スクリプト --}}
+<script>
+document.getElementById('profile_image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('avatar-preview').src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+});
+</script>
 @endsection
