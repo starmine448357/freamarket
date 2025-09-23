@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth; // ★ 追加
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
@@ -21,19 +21,15 @@ use App\Http\Controllers\RegisterController;
 |--------------------------------------------------------------------------
 */
 
-// 商品一覧（トップ & /items 共通）
+// 商品一覧（トップ画面 & マイリストは ?tab=mylist で切替）
 Route::get('/', [ItemController::class, 'index'])->name('items.index');
-Route::get('/items', [ItemController::class, 'index']);
 
-// マイリスト（公開で見られる一覧）
-Route::get('/mylist', [ItemController::class, 'mylist'])->name('items.mylist');
-
-// 商品詳細ページ
+// 商品詳細画面
 Route::get('/item/{item}', [ItemController::class, 'show'])
     ->whereNumber('item')
     ->name('items.show');
 
-// コメント投稿（ログイン必須／未ログインはloginへリダイレクト）
+// コメント投稿（ログイン必須）
 Route::post('/item/{item}/comments', [CommentController::class, 'store'])
     ->middleware('auth')
     ->whereNumber('item')
@@ -41,11 +37,11 @@ Route::post('/item/{item}/comments', [CommentController::class, 'store'])
 
 // ゲスト専用：ログイン / 会員登録
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'create'])->name('login');   // 画面表示
-    Route::post('/login', [AuthController::class, 'store']);                  // LoginRequest で検証
+    Route::get('/login', [AuthController::class, 'create'])->name('login');
+    Route::post('/login', [AuthController::class, 'store']);
 
     Route::get('/register', [RegisterController::class, 'create'])->name('register');
-    Route::post('/register', [RegisterController::class, 'store']);           // RegisterRequest で検証
+    Route::post('/register', [RegisterController::class, 'store']);
 });
 
 // ログアウト
@@ -59,16 +55,15 @@ Route::post('/logout', [AuthController::class, 'destroy'])
 |--------------------------------------------------------------------------
 */
 
-// 認証待ち画面（要ログイン）
+// 認証待ち画面
 Route::get('/email/verify', fn () => view('auth.verify-email'))
     ->middleware('auth')
     ->name('verification.notice');
 
-// 認証リンク（メール内）→ 認証後はログアウトしてログインページへ
+// 認証リンク
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill(); // 認証完了
+    $request->fulfill();
 
-    // ★ 認証直後にログアウト → ログインページへ戻す
     Auth::logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
@@ -89,11 +84,11 @@ Route::post('/email/verification-notification', function (Request $request) {
 */
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // 一時画像アップロード（プレビュー保持用）
+    // 一時画像アップロード
     Route::post('/items/image/temp', [TempImageController::class, 'store'])
         ->name('items.image.temp');
 
-    // マイページ
+    // マイページ（?tab=buy, ?tab=sell で切替）
     Route::get('/mypage', [MyPageController::class, 'show'])->name('mypage');
 
     // プロフィール編集
@@ -113,13 +108,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/item/{item}/like', [LikeController::class, 'store'])->whereNumber('item')->name('likes.store');
     Route::delete('/item/{item}/like', [LikeController::class, 'destroy'])->whereNumber('item')->name('likes.destroy');
 
-    // 購入処理（未ログインは intended 経由でログイン→戻る）
-    Route::get('/items/{item}/purchase', [PurchaseController::class, 'create'])->whereNumber('item')->name('purchases.create');
-    Route::post('/items/{item}/purchase', [PurchaseController::class, 'store'])->whereNumber('item')->name('purchases.store');
+    // 購入処理
+    Route::get('/purchase/{item}', [PurchaseController::class, 'create'])->whereNumber('item')->name('purchases.create');
+    Route::post('/purchase/{item}', [PurchaseController::class, 'store'])->whereNumber('item')->name('purchases.store');
 
     // 決済完了・キャンセル
-    Route::get('/items/{item}/purchase/success', [PurchaseController::class, 'success'])->whereNumber('item')->name('purchases.success');
-    Route::get('/items/{item}/purchase/cancel',  [PurchaseController::class, 'cancel'])->whereNumber('item')->name('purchases.cancel');
+    Route::get('/purchase/{item}/success', [PurchaseController::class, 'success'])->whereNumber('item')->name('purchases.success');
+    Route::get('/purchase/{item}/cancel',  [PurchaseController::class, 'cancel'])->whereNumber('item')->name('purchases.cancel');
 
     // 購入時住所入力
     Route::get('/purchase/address/{item}', [PurchaseController::class, 'editAddress'])->whereNumber('item')->name('purchases.address.edit');
@@ -128,10 +123,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| メール認証チェック（案内ページの「認証はこちらから」ボタン）
+| メール認証チェック
 |--------------------------------------------------------------------------
 */
-// 認証済みならログアウトしてログインページへ、未認証なら案内ページに留まる
 Route::post('/email/verify/check', function (Request $request) {
     if ($request->user()->hasVerifiedEmail()) {
         Auth::logout();

@@ -23,19 +23,25 @@
   </div>
 
   @php
-    $currentTab = $tab ?? request('tab','selling');
+    // デフォルトは 'sell'（出品した商品）
+    $currentTab = $tab ?? request('tab', 'sell');
   @endphp
 
   <div class="mypage__tabs">
-    <a href="{{ route('mypage', ['tab'=>'selling']) }}"
-       class="tab {{ $currentTab==='selling' ? 'tab--active' : '' }}">出品した商品</a>
-    <a href="{{ route('mypage', ['tab'=>'purchased']) }}"
-       class="tab {{ $currentTab==='purchased' ? 'tab--active' : '' }}">購入した商品</a>
+    <a href="{{ route('mypage', ['tab'=>'sell']) }}"
+       class="tab {{ $currentTab==='sell' ? 'tab--active' : '' }}">出品した商品</a>
+    <a href="{{ route('mypage', ['tab'=>'buy']) }}"
+       class="tab {{ $currentTab==='buy' ? 'tab--active' : '' }}">購入した商品</a>
   </div>
 
   <div class="mypage__items">
     @php
-      $list = $currentTab==='selling' ? $sellingItems : $purchasedItems;
+      if ($currentTab === 'buy') {
+        $list = $purchasedItems ?? [];
+      } else { 
+        // デフォルトは 'sell'
+        $list = $sellingItems ?? [];
+      }
     @endphp
 
     @forelse($list as $row)
@@ -59,7 +65,11 @@
       @endif
     @empty
       <div class="muted">
-        {{ $currentTab==='selling' ? 'まだ出品はありません。' : 'まだ購入はありません。' }}
+        @if($currentTab==='buy')
+          まだ購入はありません。
+        @elseif($currentTab==='sell')
+          まだ出品はありません。
+        @endif
       </div>
     @endforelse
   </div>

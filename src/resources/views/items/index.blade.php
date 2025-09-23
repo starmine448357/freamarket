@@ -10,11 +10,14 @@
 
 @section('content')
 <div class="tabs">
-  <a href="{{ route('items.index', request()->query()) }}"
+  {{-- おすすめタブ --}}
+  <a href="{{ route('items.index') }}"
      class="tab {{ ($tab ?? 'recommend') === 'recommend' ? 'tab--active' : '' }}">
     おすすめ
   </a>
-  <a href="{{ route('items.mylist', request()->query()) }}"
+
+  {{-- マイリストタブ（?tab=mylist） --}}
+  <a href="{{ route('items.index', ['tab' => 'mylist']) }}"
      class="tab {{ ($tab ?? 'recommend') === 'mylist' ? 'tab--active' : '' }}">
     マイリスト
   </a>

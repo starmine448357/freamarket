@@ -48,53 +48,43 @@ class ItemController extends Controller
     }
 
     /**
-     * 商品一覧
+     * 商品一覧（?tab=mylist でマイリスト表示）
      */
     public function index(Request $request)
     {
-        $items = Item::query()
-            ->where('user_id', '!=', Auth::id())
-            ->with(['categories', 'purchase'])
-            ->latest();
+        $tab = $request->get('tab', 'recommend');
 
-        $this->applyFilters($items, $request);
+        if ($tab === 'mylist') {
+            // マイリスト
+            $items = Item::query()
+                ->with(['categories', 'purchase'])
+                ->latest();
 
-        $items = $items->paginate(12)->appends($request->query());
-        $categories = Category::select('id', 'name')->orderBy('name')->get();
-
-        return view('items.index', [
-            'items'      => $items,
-            'tab'        => 'recommend',
-            'categories' => $categories,
-            'filters'    => $request->only(['q', 'category', 'min', 'max', 'condition', 'unsold']),
-        ]);
-    }
-
-    /**
-     * マイリスト
-     */
-    public function mylist(Request $request)
-    {
-        $items = Item::query()
-            ->with(['categories', 'purchase'])
-            ->latest();
-
-        if (Auth::check()) {
-            $items->whereHas('likes', fn ($q) => $q->where('user_id', Auth::id()))
-                  ->where('user_id', '!=', Auth::id());
+            if (Auth::check()) {
+                $items->whereHas('likes', fn ($q) => $q->where('user_id', Auth::id()))
+                      ->where('user_id', '!=', Auth::id());
+            } else {
+                // 未ログイン時は空一覧
+                $items->whereRaw('1 = 0');
+            }
         } else {
-            // 未ログイン時は空一覧
-            $items->whereRaw('1 = 0');
+            // おすすめ
+            $items = Item::query()
+                ->where('user_id', '!=', Auth::id())
+                ->with(['categories', 'purchase'])
+                ->latest();
         }
 
+        // フィルター適用
         $this->applyFilters($items, $request);
 
+        // ページネーション
         $items = $items->paginate(12)->appends($request->query());
         $categories = Category::select('id', 'name')->orderBy('name')->get();
 
         return view('items.index', [
             'items'      => $items,
-            'tab'        => 'mylist',
+            'tab'        => $tab,
             'categories' => $categories,
             'filters'    => $request->only(['q', 'category', 'min', 'max', 'condition', 'unsold']),
         ]);
