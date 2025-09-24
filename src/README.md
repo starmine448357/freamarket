@@ -17,12 +17,13 @@
 1. cp .env.example .env
 1. .env ファイルの一部を以下のように編集
 
+```
 DB_HOST=mysql
 DB_PORT=3306
 DB_DATABASE=freamarket_test
 DB_USERNAME=laravel_user
 DB_PASSWORD=laravel_pass
-
+```
 
 6. php artisan key:generate  
 7. php artisan migrate --seed  
@@ -30,10 +31,10 @@ DB_PASSWORD=laravel_pass
 
 ---
 
-## user のログイン用初期データ
+## ユーザー登録について
 
-- メールアドレス: test@example.com  
-- パスワード: password123  
+初期ユーザーデータはありません。  
+ログインするには、最初に `/register` から新規登録を行ってください。
 
 ---
 
@@ -51,3 +52,9 @@ DB_PASSWORD=laravel_pass
 - 開発環境: http://localhost:8080/  
 - phpMyAdmin: http://localhost:8082/  
 - Mailhog: http://localhost:8025/  
+
+---
+
+## ER 図
+
+![ER図](public/images/ER.png)
