@@ -9,15 +9,16 @@ use App\Http\Requests\PurchaseRequest;
 class PurchaseController extends Controller
 {
     /**
-     * 購入フォーム
+     * 購入フォーム表示
      */
     public function create(Item $item)
     {
-        // 404: すでに売却済み
+        // 売却済み商品は 404
         if (($item->status ?? null) === 'sold') {
             abort(404);
         }
-        // 403: 自分の商品は買えない
+
+        // 自分の商品は購入不可（403）
         if (Auth::id() === $item->user_id) {
             abort(403);
         }
@@ -28,27 +29,21 @@ class PurchaseController extends Controller
     /**
      * Stripe Checkout へ遷移
      */
-        public function store(PurchaseRequest $request, Item $item)
-        {
-            // 「完了」ボタンか「購入する」ボタンかを判定
-            if ($request->input('action') === 'confirm') {
-                // バリデーションに失敗すれば自動でリダイレクト & エラーメッセージ表示
-                // 成功したら「購入画面に戻す」だけ
-                return back()->withInput();
-            }
+    public function store(PurchaseRequest $request, Item $item)
+    {
+        // 確認ボタン時 → そのまま戻す
+        if ($request->input('action') === 'confirm') {
+            return back()->withInput();
+        }
 
-            // ↓ここからは「購入する」ボタンが押されたときの処理（Stripe決済）
-            $validated = $request->validated();
-            $payment   = $validated['payment'];
-            $postal    = $validated['shipping_postal_code'];
-            $address   = $validated['shipping_address'];
-            $building  = $validated['shipping_building'] ?? '';
-
-            // Stripe 処理 …（省略）
-        
+        $validated = $request->validated();
+        $payment   = $validated['payment'];
+        $postal    = $validated['shipping_postal_code'];
+        $address   = $validated['shipping_address'];
+        $building  = $validated['shipping_building'] ?? '';
 
         try {
-            // ===== Stripe Checkout セッション作成 =====
+            // Stripe Checkout セッション作成
             $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
 
             $session = $stripe->checkout->sessions->create([
@@ -58,7 +53,7 @@ class PurchaseController extends Controller
                 'line_items' => [[
                     'price_data' => [
                         'currency' => 'jpy',
-                        'unit_amount' => (int) $item->price, // 円
+                        'unit_amount' => (int) $item->price,
                         'product_data' => [
                             'name' => $item->title,
                         ],
@@ -66,7 +61,7 @@ class PurchaseController extends Controller
                     'quantity' => 1,
                 ]],
                 'success_url' => route('purchases.success', $item) . '?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url'  => route('purchases.cancel',  $item),
+                'cancel_url'  => route('purchases.cancel', $item),
                 'metadata'    => [
                     'item_id'   => (string) $item->id,
                     'buyer_id'  => (string) Auth::id(),
@@ -77,7 +72,6 @@ class PurchaseController extends Controller
                 ],
             ]);
 
-            // Stripeの決済画面へ
             return redirect()->away($session->url);
 
         } catch (\Throwable $e) {
@@ -96,8 +90,7 @@ class PurchaseController extends Controller
 
     /**
      * 決済成功後（暫定）
-     * 本番では Webhook で checkout.session.completed を受けて
-     * Purchase作成・在庫更新(sold) を行うのが安全。
+     * 本番では Webhook で checkout.session.completed を受けて処理するのが安全
      */
     public function success(Item $item)
     {

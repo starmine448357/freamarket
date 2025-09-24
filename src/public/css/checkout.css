@@ -13,10 +13,7 @@
     font-family: "Hiragino Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
-.checkout__left {
-    min-width: 0;
-}
-
+.checkout__left,
 .checkout__right {
     min-width: 0;
 }
@@ -56,14 +53,6 @@
 .divider {
     border: none;
     border-top: 1px solid #dcdcdc;
-}
-
-.mt-md {
-    margin-top: 24px;
-}
-
-.mb-md {
-    margin-bottom: 24px;
 }
 
 /* ラベル */
@@ -151,8 +140,8 @@
     width: 100%;
 }
 
-/* 住所カード */
-.address-card {
+/* 配送先カード（表示用） */
+.address-card--default {
     background: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -162,21 +151,22 @@
     line-height: 1.6;
 }
 
-/* 配送先入力フォーム */
+/* 配送先カード（フォーム切替後：装飾なし） */
+.address-card--plain {
+    background: #fff;
+    border: none;
+    padding: 0;
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
 /* 配送先入力フォーム */
 .address-form {
-    background: #fff;
-    /* ページ背景と同じ白 */
-    border: none;
-    /* 枠線なし */
-    border-radius: 0;
-    /* 角丸もなし */
-    padding: 0;
-    /* 内側の余白も削除 */
     margin-top: 10px;
 }
 
-.address-form label {
+.address-form-label {
     font-size: 13px;
     font-weight: 600;
     color: #333;
@@ -184,7 +174,7 @@
     margin: 8px 0 4px;
 }
 
-.address-form input {
+.address-form-input {
     width: 100%;
     padding: 8px 10px;
     border: 1px solid #ccc;
@@ -193,7 +183,7 @@
     margin-bottom: 6px;
 }
 
-.address-form .error {
+.address-form-error {
     color: #e63946;
     font-size: 12px;
     margin: 4px 0 8px 0;
@@ -213,19 +203,6 @@
     border-radius: 4px;
 }
 
-/* 配送先カード（表示時） */
-.address-card {
-    background: #fff;
-    /* ページ背景と同じ */
-    border: none;
-    /* 枠を消す */
-    padding: 0;
-    /* 余白も消す */
-    margin-top: 6px;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
 /* 配送先リンク（青文字＋ホバー下線） */
 .link--blue {
     color: #0073cc;
@@ -237,6 +214,16 @@
 .link--blue:hover {
     text-decoration: underline;
 }
+
+/* ユーティリティ */
+.mt-md {
+    margin-top: 24px;
+}
+
+.mb-md {
+    margin-bottom: 24px;
+}
+
 /* レスポンシブ */
 @media (max-width: 860px) {
     .checkout {

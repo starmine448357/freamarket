@@ -12,15 +12,14 @@
     @csrf
     @method('PUT')
 
-    {{-- アイコン画像 --}}
+    {{-- プロフィール画像 --}}
     <div class="profile__avatar center">
-      {{-- 現在の画像プレビュー --}}
       <img 
         id="avatar-preview"
         src="{{ auth()->user()->profile_image_path 
                 ? asset('storage/'.auth()->user()->profile_image_path) 
                 : asset('images/default-avatar.png') }}" 
-        alt="" 
+        alt="プロフィール画像" 
         class="avatar avatar--lg"
         style="width:120px;height:120px;border-radius:50%;object-fit:cover">
 
@@ -64,17 +63,17 @@
   </form>
 </div>
 
-{{-- プレビュー用スクリプト --}}
+{{-- プロフィール画像プレビュー --}}
 <script>
 document.getElementById('profile_image').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+  const file = e.target.files[0];
+  if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        document.getElementById('avatar-preview').src = e.target.result;
-    };
-    reader.readAsDataURL(file);
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('avatar-preview').src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 });
 </script>
 @endsection

@@ -1,4 +1,6 @@
-/* ====== Base ====== */
+/* =======================
+   Base
+   ======================= */
 *,
 *::before,
 *::after {
@@ -19,7 +21,9 @@
     color: inherit;
 }
 
-/* ====== Header ====== */
+/* =======================
+   Header
+   ======================= */
 .header {
     position: sticky;
     top: 0;
@@ -48,14 +52,13 @@
     display: block;
 }
 
-/* 中央列：検索を中央寄せ */
+/* 検索エリア */
 .header__center {
     flex: 1;
     display: flex;
     justify-content: center;
 }
 
-/* Search */
 .search {
     width: 100%;
     display: flex;
@@ -68,12 +71,10 @@
     margin: 0 auto;
     padding: 10px 14px;
     font-size: 16px;
-    /* iOSズーム防止 */
     border: 1px solid #fff;
     background: #fff;
     color: #111;
     border-radius: 6px;
-    /* 角をやや四角に */
 }
 
 .search__input::placeholder {
@@ -85,7 +86,7 @@
     box-shadow: 0 0 0 3px rgba(255, 255, 255, .35);
 }
 
-/* Right Nav */
+/* 右ナビゲーション */
 .nav {
     margin-left: auto;
     display: flex;
@@ -101,7 +102,9 @@
     color: #fff;
 }
 
-/* Buttons（共通） */
+/* =======================
+   Buttons
+   ======================= */
 .btn {
     padding: 8px 14px;
     border-radius: 8px;
@@ -109,37 +112,30 @@
     font-weight: 600;
 }
 
-/* 出品ボタン（白背景・黒文字・白フチ） */
+/* 出品ボタン（白背景・黒文字） */
 .btn--sell {
-    display: inline-block;
-    padding: 8px 14px;
-    border-radius: 8px;
     background: #fff;
-    /* 白背景 */
     color: #000;
-    /* 黒文字 */
     border: 1px solid #fff;
-    /* 白フチ */
-    font-weight: 600;
-    text-decoration: none;
 }
 
 .btn--sell:hover,
 .btn--sell:focus-visible {
     background: #f5f5f5;
-    /* 薄いグレーでホバー感 */
     color: #000;
     border-color: #fff;
 }
 
-/* Main container */
+/* =======================
+   Main container
+   ======================= */
 .container {
     padding: 24px 16px;
     max-width: 1040px;
     margin: 0 auto;
 }
 
-/* Flash */
+/* Flashメッセージ */
 .flash {
     background: #e6ffed;
     border: 1px solid #b7f5c5;
@@ -147,7 +143,9 @@
     border-radius: 8px;
 }
 
-/* ====== Responsive ====== */
+/* =======================
+   Responsive
+   ======================= */
 @media (max-width: 900px) {
     .header {
         flex-wrap: wrap;
@@ -159,7 +157,6 @@
         width: 100%;
     }
 
-    /* 検索を2段目・全幅に */
     .search__input {
         max-width: none;
     }
@@ -181,7 +178,9 @@
     }
 }
 
-/* アクセシビリティ（キーボードフォーカス） */
+/* =======================
+   Accessibility
+   ======================= */
 .nav__link:focus-visible,
 .btn:focus-visible,
 .search__input:focus-visible {
@@ -190,7 +189,9 @@
     box-shadow: none;
 }
 
-/* ====== Validation (both class names supported) ====== */
+/* =======================
+   Validation
+   ======================= */
 .error,
 .form-error {
     color: #ef4444;

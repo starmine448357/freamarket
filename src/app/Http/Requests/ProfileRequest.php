@@ -6,11 +6,17 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ProfileRequest extends FormRequest
 {
+    /**
+     * 認可判定
+     */
     public function authorize(): bool
     {
-        return auth()->check(); 
+        return auth()->check();
     }
 
+    /**
+     * バリデーションルール
+     */
     public function rules(): array
     {
         return [
@@ -18,6 +24,9 @@ class ProfileRequest extends FormRequest
         ];
     }
 
+    /**
+     * エラーメッセージ
+     */
     public function messages(): array
     {
         return [
@@ -26,6 +35,9 @@ class ProfileRequest extends FormRequest
         ];
     }
 
+    /**
+     * 属性名（フォームラベル用）
+     */
     public function attributes(): array
     {
         return [

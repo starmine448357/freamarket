@@ -6,25 +6,34 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ExhibitionRequest extends FormRequest
 {
+    /**
+     * 認可判定
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * バリデーションルール
+     */
     public function rules(): array
     {
         return [
-            'title'       => ['required', 'string'],
-            'brand'       => ['nullable', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:255'],
-            'image'       => ['required', 'file', 'mimes:jpeg,png'],
-            'categories'  => ['required', 'array', 'min:1'],
-            'categories.*'=> ['integer', 'exists:categories,id'],
-            'condition'   => ['required'],
-            'price'       => ['required', 'integer', 'min:0'],
+            'title'        => ['required', 'string'],
+            'brand'        => ['nullable', 'string', 'max:255'],
+            'description'  => ['required', 'string', 'max:255'],
+            'image'        => ['required', 'file', 'mimes:jpeg,png'],
+            'categories'   => ['required', 'array', 'min:1'],
+            'categories.*' => ['integer', 'exists:categories,id'],
+            'condition'    => ['required'],
+            'price'        => ['required', 'integer', 'min:0'],
         ];
     }
 
+    /**
+     * エラーメッセージ
+     */
     public function messages(): array
     {
         return [
@@ -45,6 +54,9 @@ class ExhibitionRequest extends FormRequest
         ];
     }
 
+    /**
+     * 属性名（フォームラベル用）
+     */
     public function attributes(): array
     {
         return [

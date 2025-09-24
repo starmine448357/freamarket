@@ -28,7 +28,7 @@
         <option value="konbini" {{ old('payment')==='konbini' ? 'selected' : '' }}>コンビニ払い</option>
         <option value="card"    {{ old('payment')==='card' ? 'selected' : '' }}>カード払い</option>
       </select>
-      @error('payment')<div class="error">{{ $message }}</div>@enderror
+      @error('payment')<div class="address-form-error">{{ $message }}</div>@enderror
     </div>
 
     <hr class="divider mt-md mb-md">
@@ -37,48 +37,51 @@
     <div class="section">
       <div class="label label--bold">配送先</div>
 
-      {{-- デフォルト表示 --}}
+      {{-- デフォルト住所 --}}
       <div id="defaultAddress" 
            @if($errors->has('shipping_postal_code') || $errors->has('shipping_address')) style="display:none;" @endif 
-           class="address-card">
+           class="address-card--default">
         <div>〒 {{ old('shipping_postal_code', auth()->user()->postal_code) }}</div>
         <div>{{ old('shipping_address', auth()->user()->address) }}</div>
         <div>{{ old('shipping_building', auth()->user()->building) }}</div>
-        <a class="link link--blue mt-xs" href="javascript:void(0);" id="toggleAddressForm">配送先を変更する</a>
+        <a class="link--blue mt-xs" href="javascript:void(0);" id="toggleAddressForm">配送先を変更する</a>
 
-        {{-- hiddenで送信 --}}
+        {{-- hidden で送信 --}}
         <input type="hidden" name="shipping_postal_code" value="{{ old('shipping_postal_code', auth()->user()->postal_code) }}">
         <input type="hidden" name="shipping_address" value="{{ old('shipping_address', auth()->user()->address) }}">
         <input type="hidden" name="shipping_building" value="{{ old('shipping_building', auth()->user()->building) }}">
       </div>
 
-      {{-- 入力フォーム --}}
+      {{-- 住所入力フォーム --}}
       <div id="addressForm" 
-           class="address-form" 
+           class="address-form address-card--plain" 
            style="@if($errors->has('shipping_postal_code') || $errors->has('shipping_address')) display:block; @else display:none; @endif">
         
         <div class="form-group">
-          <label for="shipping_postal_code">郵便番号</label>
+          <label for="shipping_postal_code" class="address-form-label">郵便番号</label>
           <input type="text" id="shipping_postal_code" name="shipping_postal_code" 
-                 value="{{ old('shipping_postal_code', auth()->user()->postal_code) }}">
-          @error('shipping_postal_code')<div class="error">{{ $message }}</div>@enderror
+                 value="{{ old('shipping_postal_code', auth()->user()->postal_code) }}"
+                 class="address-form-input">
+          @error('shipping_postal_code')<div class="address-form-error">{{ $message }}</div>@enderror
         </div>
 
         <div class="form-group">
-          <label for="shipping_address">住所</label>
+          <label for="shipping_address" class="address-form-label">住所</label>
           <input type="text" id="shipping_address" name="shipping_address" 
-                 value="{{ old('shipping_address', auth()->user()->address) }}">
-          @error('shipping_address')<div class="error">{{ $message }}</div>@enderror
+                 value="{{ old('shipping_address', auth()->user()->address) }}"
+                 class="address-form-input">
+          @error('shipping_address')<div class="address-form-error">{{ $message }}</div>@enderror
         </div>
 
         <div class="form-group">
-          <label for="shipping_building">建物名</label>
+          <label for="shipping_building" class="address-form-label">建物名</label>
           <input type="text" id="shipping_building" name="shipping_building" 
-                 value="{{ old('shipping_building', auth()->user()->building) }}">
-          @error('shipping_building')<div class="error">{{ $message }}</div>@enderror
+                 value="{{ old('shipping_building', auth()->user()->building) }}"
+                 class="address-form-input">
+          @error('shipping_building')<div class="address-form-error">{{ $message }}</div>@enderror
         </div>
 
-        {{-- 操作ボタン --}}
+        {{-- 戻る／完了ボタン --}}
         <div class="address-actions">
           <button type="button" id="cancelAddress" class="btn btn--outline btn--small">戻る</button>
           <button type="submit" name="action" value="confirm" class="btn btn--primary btn--small">完了</button>
@@ -105,18 +108,16 @@
 {{-- JS --}}
 <script>
 (function(){
-  // 支払い方法の反映
+  // 支払い方法 → サマリーへ反映
   const select = document.getElementById('paymentSelect');
   const target = document.getElementById('summaryPayment');
-  const labels = {
-    'konbini': 'コンビニ払い',
-    'card':    'カード払い'
-  };
+  const labels = { 'konbini': 'コンビニ払い', 'card': 'カード払い' };
+
   function sync() { target.textContent = labels[select.value] ?? '—'; }
   select.addEventListener('change', sync);
   sync();
 
-  // 配送先切替
+  // 配送先フォームの表示切替
   const toggleBtn = document.getElementById('toggleAddressForm');
   const form = document.getElementById('addressForm');
   const defaultAddress = document.getElementById('defaultAddress');

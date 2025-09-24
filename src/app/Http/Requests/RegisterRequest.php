@@ -6,21 +6,30 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {
+    /**
+     * 認可判定
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * バリデーションルール
+     */
     public function rules(): array
     {
         return [
             'name'                  => ['required', 'string', 'max:255'],
             'email'                 => ['required', 'email', 'unique:users,email'],
             'password'              => ['required', 'string', 'min:8', 'confirmed'],
-            'password_confirmation' => ['required'], // ★ min:8 は不要
+            'password_confirmation' => ['required'], // min:8 は不要
         ];
     }
 
+    /**
+     * エラーメッセージ
+     */
     public function messages(): array
     {
         return [
@@ -38,6 +47,9 @@ class RegisterRequest extends FormRequest
         ];
     }
 
+    /**
+     * 属性名（フォームラベル用）
+     */
     public function attributes(): array
     {
         return [

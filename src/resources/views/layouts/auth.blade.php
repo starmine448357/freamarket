@@ -12,7 +12,8 @@
     $app  = public_path('css/app.css');
     $appVer  = file_exists($app) ? filemtime($app) : time();
   @endphp
-  {{-- 共通 → 画面用の順で読み込み --}}
+
+  {{-- 共通CSS → 認証画面用CSSの順で読み込み --}}
   <link rel="stylesheet" href="{{ asset('css/app.css')  }}?v={{ $appVer  }}">
   <link rel="stylesheet" href="{{ asset('css/auth.css') }}?v={{ $authVer }}">
 
@@ -26,7 +27,10 @@
   </header>
 
   <main class="auth-container">
-    @if (session('success')) <div class="auth-flash">{{ session('success') }}</div> @endif
+    @if (session('success'))
+      <div class="auth-flash">{{ session('success') }}</div>
+    @endif
+
     @yield('content')
   </main>
 </body>

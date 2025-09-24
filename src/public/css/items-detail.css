@@ -1,6 +1,6 @@
-/* =======================
+/* ==============================
    商品詳細レイアウト
-   ======================= */
+   ============================== */
 .detail {
   display: grid;
   grid-template-columns: 420px 1fr;
@@ -8,12 +8,14 @@
   align-items: start;
 }
 
+/* レスポンシブ：スマホ時は縦並び */
 @media (max-width: 960px) {
   .detail {
     grid-template-columns: 1fr;
   }
 }
 
+/* サムネイル画像 */
 .thumb {
   display: block;
   border-radius: 8px;
@@ -26,6 +28,7 @@
   max-width: 420px;
 }
 
+/* タイトル・価格 */
 .detail__title {
   font-size: 20px;
   font-weight: 700;
@@ -40,14 +43,17 @@
   font-size: 22px;
 }
 
-.muted {
+/* サブテキスト（ブランド等） */
+.text-muted {
   color: #6b7280;
 }
 
+/* セクション */
 .section {
   margin-top: 20px;
 }
 
+/* ラベル */
 .label {
   font-size: 14px;
   color: #666;
@@ -58,11 +64,13 @@
   color: #333;
 }
 
-.desc {
+/* 商品説明 */
+.detail__desc {
   white-space: pre-wrap;
   line-height: 1.7;
 }
 
+/* カテゴリチップ */
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -78,6 +86,7 @@
   font-size: 12px;
 }
 
+/* 行並び用 */
 .row {
   display: flex;
   align-items: center;
@@ -92,9 +101,9 @@
   margin-right: 8px;
 }
 
-/* =======================
-   メタ（☆ + 💬）
-   ======================= */
+/* ==============================
+   メタ（いいね・コメント数）
+   ============================== */
 .meta {
   display: flex;
   gap: 16px;
@@ -119,12 +128,11 @@
   text-decoration: underline;
 }
 
-.meta-link .count,
-.star-btn .count {
+.meta-count {
   font-weight: 700;
 }
 
-/* 星ボタン（枠なしゴースト） */
+/* 星ボタン */
 .star-btn {
   display: inline-flex;
   align-items: center;
@@ -156,16 +164,15 @@
   fill: currentColor;
 }
 
-/* 💬はシンプルに */
+/* コメントバブルアイコン */
 .bubble {
   display: inline-block;
   line-height: 1;
 }
 
-/* =======================
-   コメント（統一・吹き出しUI）
-   ======================= */
-/* コメント一覧（箇条書きの点を消す＆左インデントをなくす） */
+/* ==============================
+   コメント一覧
+   ============================== */
 .comment-list {
   list-style: none;
   margin: 0;
@@ -175,11 +182,11 @@
   gap: 16px;
 }
 
-/* 各コメント：ヘッダー（アバター＋名前等）＋本文（吹き出し） */
 .comment {
   display: block;
 }
 
+/* コメントヘッダー（アイコン＋名前） */
 .comment__header {
   display: flex;
   align-items: center;
@@ -187,13 +194,15 @@
 }
 
 .comment__avatar {
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  /* 大きめ */
+  height: 48px;
   border-radius: 50%;
   object-fit: cover;
   display: block;
-  flex: 0 0 36px;
   background: #e6e6e6;
+  flex: 0 0 48px;
+  margin-right: 8px;
 }
 
 .comment__name {
@@ -208,6 +217,7 @@
   gap: 6px;
 }
 
+/* 出品者バッジ */
 .badge--seller {
   background: #eff6ff;
   color: #1d4ed8;
@@ -216,11 +226,10 @@
   font-size: 11px;
 }
 
-/* 本文：吹き出し（しっぽ付き） */
+/* コメント本文（吹き出しUI） */
 .comment__body {
   position: relative;
   margin: 6px 0 0 0;
-  /* 36(アイコン) + 10(gap) */
   line-height: 1.7;
   word-break: break-word;
   white-space: pre-wrap;
@@ -232,7 +241,7 @@
   max-width: 680px;
 }
 
-/* しっぽ（外枠） */
+/* 吹き出しのしっぽ（外枠） */
 .comment__body::before {
   content: "";
   position: absolute;
@@ -243,7 +252,7 @@
   border-color: transparent #e5e7eb transparent transparent;
 }
 
-/* しっぽ（中身） */
+/* 吹き出しのしっぽ（内側） */
 .comment__body::after {
   content: "";
   position: absolute;
@@ -254,20 +263,20 @@
   border-color: transparent #f7f8fa transparent transparent;
 }
 
-/* =======================
+/* ==============================
    コメントフォーム
-   ======================= */
-#comment-form .textarea {
+   ============================== */
+.comment-form .textarea {
   display: block;
   width: 100%;
   margin: 6px 0 10px;
 }
 
-#comment-form .btn {
+.comment-form .btn {
   margin-top: 2px;
 }
 
-/* ボタン（他CSSに負けないよう補強） */
+/* プライマリボタン（上書き強化） */
 .btn--primary {
   background: #ef4444;
   color: #fff;
@@ -288,7 +297,9 @@
   cursor: not-allowed;
 }
 
-/* ちょい余白 */
+/* ==============================
+   ユーティリティ
+   ============================== */
 .mt-xs {
   margin-top: 8px;
 }
@@ -297,23 +308,13 @@
   margin-top: 12px;
 }
 
-/* a.btn の下線除去（全状態） */
-a.btn,
-a.btn:link,
-a.btn:visited,
-a.btn:hover,
-a.btn:focus,
-a.btn:active {
+/* ボタン共通：下線削除（a要素も含む） */
+.btn,
+.btn:link,
+.btn:visited,
+.btn:hover,
+.btn:focus,
+.btn:active {
   text-decoration: none !important;
   border-bottom: 0 !important;
-}
-
-.comment__avatar {
-  width: 48px;
-  /* ← デフォルトより大きめ */
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 8px;
-  /* 名前との間隔 */
 }

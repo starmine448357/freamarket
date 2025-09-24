@@ -9,18 +9,18 @@ use App\Http\Requests\CommentRequest;
 class CommentController extends Controller
 {
     /**
-     * コメント保存
+     * コメントを保存する
      */
-public function store(CommentRequest $request, Item $item)
-{
-    $data = $request->validated();
+    public function store(CommentRequest $request, Item $item)
+    {
+        $validated = $request->validated();
 
-    $item->comments()->create([
-        'user_id' => Auth::id(),
-        'content' => $data['content'],
-    ]);
+        $item->comments()->create([
+            'user_id' => Auth::id(),
+            'content' => $validated['content'],
+        ]);
 
-    return redirect()->to(route('items.show', $item->id) . '#comments');
+        // コメント一覧の位置へスクロール
+        return redirect()->route('items.show', $item->id) . '#comments';
+    }
 }
-}
-

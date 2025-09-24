@@ -23,16 +23,12 @@ class TempImageController extends Controller
             return response()->json(['error' => 'アップロードに失敗しました'], 422);
         }
 
-        // 保存先ディレクトリを作成
         Storage::disk('public')->makeDirectory('temp');
 
-        // ランダムなファイル名を生成
         $filename = Str::random(40) . '.' . $file->getClientOriginalExtension();
 
-        // public/temp に保存
         $file->storeAs('temp', $filename, 'public');
 
-        // セッションに保持
         session(['temp_image' => $filename]);
 
         return response()->json([

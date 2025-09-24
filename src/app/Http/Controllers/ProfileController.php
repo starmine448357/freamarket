@@ -6,12 +6,10 @@ use App\Http\Requests\ProfileRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-
-
 class ProfileController extends Controller
 {
     /**
-     * プロフィール編集画面表示 (/mypage/profile)
+     * プロフィール編集画面を表示 (/mypage/profile)
      */
     public function edit()
     {
@@ -24,14 +22,9 @@ class ProfileController extends Controller
      */
     public function update(ProfileRequest $request)
     {
-
-
-        \Log::info('hasFile? ', [$request->hasFile('profile_image')]);
-        \Log::info('file: ', [$request->file('profile_image')]);
-
         $user = $request->user();
 
-        // 画像がアップロードされた場合
+        // アップロード画像がある場合
         if ($request->hasFile('profile_image')) {
             // 古い画像を削除
             if (
@@ -46,15 +39,13 @@ class ProfileController extends Controller
             $user->profile_image_path = $path;
         }
 
-        // 他の項目を更新
+        // 他のプロフィール情報を更新
         $user->name        = $request->input('name');
         $user->postal_code = $request->input('postal_code');
         $user->address     = $request->input('address');
         $user->building    = $request->input('building');
-
         $user->save();
 
-        // 更新後はマイページへリダイレクト
         return redirect()
             ->route('mypage')
             ->with('status', 'プロフィールを更新しました');

@@ -13,6 +13,9 @@ class User extends Authenticatable implements MustVerifyEmail
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    /**
+     * 複数代入可能な属性
+     */
     protected $fillable = [
         'name',
         'email',
@@ -23,36 +26,48 @@ class User extends Authenticatable implements MustVerifyEmail
         'profile_image_path', // プロフィール画像
     ];
 
+    /**
+     * 非表示にする属性
+     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    /**
+     * 型キャスト
+     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
 
-    // ユーザーが購入した履歴
+    /**
+     * リレーション：購入履歴
+     */
     public function purchases()
     {
-        return $this->hasMany(\App\Models\Purchase::class);
+        return $this->hasMany(Purchase::class);
     }
 
     /**
-     * プロフィール画像のURLを返すアクセサ
+     * 追加アクセサ
      */
     protected $appends = ['profile_image_url'];
 
+    /**
+     * プロフィール画像のURL
+     */
     public function getProfileImageUrlAttribute(): string
     {
         if ($this->profile_image_path) {
             return Storage::disk('public')->url($this->profile_image_path);
         }
-        // デフォルト画像（public/images/avatar-default.png を置いておくと安心）
+
+        // デフォルト画像（public/images/avatar-default.png を用意）
         return asset('images/avatar-default.png');
     }
 }

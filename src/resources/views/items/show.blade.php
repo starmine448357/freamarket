@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 @section('title', $item->title.' | 商品詳細')
 @section('page_css')
@@ -30,9 +31,7 @@
       ¥{{ number_format($item->price) }} <span class="muted">（税込）</span>
     </div>
 
-    {{-- ☆いいね（トグル）＋ 💬コメント数 --}}
     @php
-      // 将来的には controller 側で withCount(['likes','comments']) を推奨
       $liked         = auth()->check() ? $item->isLikedBy(auth()->user()) : false;
       $likesCount    = $item->likes_count    ?? $item->likes()->count();
       $commentsCount = $item->comments_count ?? $item->comments()->count();
@@ -83,15 +82,12 @@
     <div class="mt-xs">
       @if($item->is_sold)
         <div class="badge badge--sold">SOLD</div>
-
       @elseif(auth()->check() && auth()->id() === $item->user_id)
         <button class="btn btn--disabled" type="button" disabled>あなたの商品です</button>
-
       @elseif(auth()->check())
         <a class="btn btn--primary" href="{{ route('purchases.create', $item) }}">
           購入手続きへ
         </a>
-
       @else
         <a class="btn btn--primary" href="{{ route('login') }}">購入手続きへ</a>
       @endif
@@ -125,10 +121,9 @@
     </div>
 
     {{-- コメント --}}
-    <div class="section" id="comments" aria-labelledby="comments-title">
+    <div class="section comment-section" aria-labelledby="comments-title">
       <div class="label label--bold" id="comments-title">コメント（{{ $commentsCount }}）</div>
 
-      {{-- コメント一覧（0件ならリスト自体を表示しない） --}}
       @if($commentsCount > 0)
         <ul class="comment-list">
           @foreach($item->comments as $comment)
@@ -144,14 +139,12 @@
                 <span class="comment__name">{{ $comment->user->name }}</span>
               </div>
               <p class="comment__body">{{ $comment->content }}</p>
-              {{-- ↑ カラム名が body や text なら置き換え --}}
             </li>
           @endforeach
         </ul>
       @endif
 
-      {{-- フォーム --}}
-      <form id="comment-form" class="form mt-sm" method="POST" action="{{ route('comments.store', $item) }}">
+      <form class="form comment-form mt-sm" method="POST" action="{{ route('comments.store', $item) }}">
         @csrf
         <div class="field">
           <label for="comment-content" class="label label--bold">商品のコメント</label>
@@ -161,7 +154,6 @@
             name="content"
             rows="4"
             placeholder="コメントを入力してください"
-            
           >{{ old('content') }}</textarea>
           @error('content')<div class="error">{{ $message }}</div>@enderror
         </div>

@@ -23,30 +23,32 @@
   </div>
 
   @php
-    // デフォルトは 'sell'（出品した商品）
+    // デフォルトは 'sell'（出品した商品タブ）
     $currentTab = $tab ?? request('tab', 'sell');
   @endphp
 
   <div class="mypage__tabs">
     <a href="{{ route('mypage', ['tab'=>'sell']) }}"
-       class="tab {{ $currentTab==='sell' ? 'tab--active' : '' }}">出品した商品</a>
+       class="tab {{ $currentTab==='sell' ? 'tab--active' : '' }}">
+      出品した商品
+    </a>
     <a href="{{ route('mypage', ['tab'=>'buy']) }}"
-       class="tab {{ $currentTab==='buy' ? 'tab--active' : '' }}">購入した商品</a>
+       class="tab {{ $currentTab==='buy' ? 'tab--active' : '' }}">
+      購入した商品
+    </a>
   </div>
 
   <div class="mypage__items">
     @php
-      if ($currentTab === 'buy') {
-        $list = $purchasedItems ?? [];
-      } else { 
-        // デフォルトは 'sell'
-        $list = $sellingItems ?? [];
-      }
+      // 出品 or 購入タブごとに表示データを切り替え
+      $list = $currentTab === 'buy'
+        ? ($purchasedItems ?? [])
+        : ($sellingItems ?? []);
     @endphp
 
     @forelse($list as $row)
       @php
-        // sellingItems は Item, purchasedItems は Purchase（→ item 経由）
+        // 出品商品は Item モデル, 購入商品は Purchase 経由で Item を参照
         $entity = isset($row->title) ? $row : ($row->item ?? null);
       @endphp
 

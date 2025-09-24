@@ -6,8 +6,17 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CommentRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
+    /**
+     * 認可判定
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
 
+    /**
+     * バリデーションルール
+     */
     public function rules(): array
     {
         return [
@@ -15,6 +24,9 @@ class CommentRequest extends FormRequest
         ];
     }
 
+    /**
+     * エラーメッセージ
+     */
     public function messages(): array
     {
         return [
@@ -23,8 +35,13 @@ class CommentRequest extends FormRequest
         ];
     }
 
+    /**
+     * 属性名（フォームラベル用）
+     */
     public function attributes(): array
     {
-        return ['content' => '商品コメント'];
+        return [
+            'content' => '商品コメント',
+        ];
     }
 }

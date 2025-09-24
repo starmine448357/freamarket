@@ -6,11 +6,17 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
 {
+    /**
+     * 認可判定
+     */
     public function authorize(): bool
     {
         return true;
     }
 
+    /**
+     * バリデーションルール
+     */
     public function rules(): array
     {
         return [
@@ -19,6 +25,9 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    /**
+     * エラーメッセージ
+     */
     public function messages(): array
     {
         return [
@@ -29,6 +38,9 @@ class LoginRequest extends FormRequest
         ];
     }
 
+    /**
+     * 属性名（フォームラベル用）
+     */
     public function attributes(): array
     {
         return [

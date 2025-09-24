@@ -48,7 +48,7 @@ class ItemController extends Controller
     }
 
     /**
-     * 商品一覧（?tab=mylist でマイリスト表示）
+     * 商品一覧を表示（?tab=mylist でマイリスト表示）
      */
     public function index(Request $request)
     {
@@ -75,11 +75,9 @@ class ItemController extends Controller
                 ->latest();
         }
 
-        // フィルター適用
         $this->applyFilters($items, $request);
 
-        // ページネーション
-        $items = $items->paginate(12)->appends($request->query());
+        $items      = $items->paginate(12)->appends($request->query());
         $categories = Category::select('id', 'name')->orderBy('name')->get();
 
         return view('items.index', [
@@ -91,7 +89,7 @@ class ItemController extends Controller
     }
 
     /**
-     * 商品詳細
+     * 商品詳細を表示
      */
     public function show(Item $item)
     {
@@ -106,7 +104,7 @@ class ItemController extends Controller
     }
 
     /**
-     * 出品フォーム表示
+     * 出品フォームを表示
      */
     public function create()
     {
@@ -125,7 +123,7 @@ class ItemController extends Controller
     }
 
     /**
-     * 出品登録
+     * 商品を新規登録
      */
     public function store(ExhibitionRequest $request)
     {
@@ -134,10 +132,10 @@ class ItemController extends Controller
         return DB::transaction(function () use ($request, $validated) {
             Storage::disk('public')->makeDirectory('images');
 
-            $path = null;
+            $path     = null;
             $tempName = trim((string) $request->input('temp_image', ''));
 
-            // temp から本保存へ移動
+            // (1) temp から本保存へ移動
             if ($tempName !== '' && Storage::disk('public')->exists("temp/{$tempName}")) {
                 if (Storage::disk('public')->move("temp/{$tempName}", "images/{$tempName}")) {
                     $path = "images/{$tempName}";
@@ -145,7 +143,7 @@ class ItemController extends Controller
                 }
             }
 
-            // 通常アップロード
+            // (2) 通常アップロード
             if ($path === null && $request->hasFile('image')) {
                 $path = $request->file('image')->store('images', 'public');
             }
@@ -172,7 +170,7 @@ class ItemController extends Controller
     }
 
     /**
-     * 編集フォーム表示
+     * 編集フォームを表示
      */
     public function edit(Item $item)
     {
@@ -185,7 +183,7 @@ class ItemController extends Controller
     }
 
     /**
-     * 商品更新
+     * 商品を更新
      */
     public function update(ExhibitionRequest $request, Item $item)
     {
@@ -195,22 +193,22 @@ class ItemController extends Controller
         return DB::transaction(function () use ($request, $item, $validated) {
             Storage::disk('public')->makeDirectory('images');
 
-            $replaced = false;
-            $tempName = trim((string) $request->input('temp_image', ''));
+            $replaced  = false;
+            $tempName  = trim((string) $request->input('temp_image', ''));
 
-            // temp から差し替え
+            // (1) temp から差し替え
             if ($tempName !== '' && Storage::disk('public')->exists("temp/{$tempName}")) {
                 if (!empty($item->image_path)) {
                     Storage::disk('public')->delete($item->image_path);
                 }
                 if (Storage::disk('public')->move("temp/{$tempName}", "images/{$tempName}")) {
                     $item->image_path = "images/{$tempName}";
-                    $replaced = true;
+                    $replaced         = true;
                     session()->forget('temp_image');
                 }
             }
 
-            // 通常アップロード差し替え
+            // (2) 通常アップロード差し替え
             if (!$replaced && $request->hasFile('image')) {
                 if (!empty($item->image_path)) {
                     Storage::disk('public')->delete($item->image_path);
@@ -234,7 +232,7 @@ class ItemController extends Controller
     }
 
     /**
-     * 商品削除
+     * 商品を削除
      */
     public function destroy(Item $item)
     {

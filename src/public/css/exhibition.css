@@ -1,4 +1,4 @@
-/* ================================
+/* ==============================
    Exhibition Page Styles (Clean)
 ================================ */
 
@@ -39,6 +39,7 @@
     margin-top: 18px;
 }
 
+/* Spacing Utilities */
 .mt-xs {
     margin-top: 8px;
 }
@@ -49,6 +50,10 @@
 
 .mb-xs {
     margin-bottom: 10px;
+}
+
+.hidden {
+    display: none;
 }
 
 /* Title / Headings */
@@ -76,18 +81,16 @@
     color: var(--text);
 }
 
-/* Preview (非選択時は非表示) */
+/* Preview */
 .preview-wrap {
     display: none;
-    /* 初期は非表示 */
     max-width: 720px;
-    margin: 12px auto 20px;
+    margin: 12px auto 16px;
     text-align: left;
 }
 
 .preview-wrap.is-active {
     display: block;
-    /* JSで画像があれば表示 */
 }
 
 .image_output {
@@ -98,27 +101,24 @@
     width: 100%;
 }
 
-/* 商品画像プレビューのサイズ調整 */
 .reader_file {
     width: 40%;
-    /* フォーム横幅の40% */
     aspect-ratio: 1 / 1;
-    /* 正方形にする */
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
     background: #f9f9f9;
     margin: 0;
-    /* 左寄せ */
 }
 
 .reader_image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* 余白ナシで収める。全部見せたいなら contain */
     display: block;
 }
+
+/* Inputs */
 .input,
 .select,
 .textarea {
@@ -182,8 +182,11 @@
     background: #fff;
 }
 
-.hidden {
-    display: none;
+.dropzone.dropzone--flat {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    display: inline-block;
 }
 
 /* Buttons */
@@ -322,37 +325,4 @@
         width: 140px;
         height: 140px;
     }
-}
-
-/* これを既存の .dropzone の下に追記（または上書き） */
-.dropzone.dropzone--flat {
-    border: 0;
-    background: transparent;
-    padding: 0;
-    /* ← 余白ゼロ */
-    display: inline-block;
-    /* ボタンの横幅だけ */
-}
-
-/* プレビューは画像があるときだけ表示 */
-.preview-wrap {
-    display: none;
-    max-width: 720px;
-    margin: 12px auto 16px;
-    /* タイトルとの余白 */
-}
-
-.preview-wrap.is-active {
-    display: block;
-}
-
-.image_output {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-/* ドロップゾーンは実線 */
-.dropzone {
-    border: 2px solid var(--line) !important;
 }

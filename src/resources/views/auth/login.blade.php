@@ -1,25 +1,22 @@
-@extends('layouts.auth') {{-- ロゴだけのレイアウトを使う --}}
+@extends('layouts.auth')
 
 @section('title', 'ログイン')
 
 @section('content')
-  <h1 class="page-title page-title--center">ログイン</h1>
+  <h1 class="auth-title">ログイン</h1>
 
-  <form class="card card--pad form form--narrow"
-        method="POST"
-        action="{{ route('login') }}"
-        novalidate>
+  <form class="auth-container" method="POST" action="{{ route('login') }}" novalidate>
     @csrf
 
     {{-- メールアドレス --}}
     <div class="form-field">
-      <label for="email" class="form-label">メールアドレス</label>
+      <label for="email" class="auth-label">メールアドレス</label>
       <input
         id="email"
-        class="form-input {{ $errors->has('email') ? 'is-invalid' : '' }}"
         type="email"
         name="email"
         value="{{ old('email') }}"
+        class="auth-input {{ $errors->has('email') ? 'is-invalid' : '' }}"
         required
         autofocus
         autocomplete="username"
@@ -31,12 +28,12 @@
 
     {{-- パスワード --}}
     <div class="form-field">
-      <label for="password" class="form-label">パスワード</label>
+      <label for="password" class="auth-label">パスワード</label>
       <input
         id="password"
-        class="form-input {{ $errors->has('password') ? 'is-invalid' : '' }}"
         type="password"
         name="password"
+        class="auth-input {{ $errors->has('password') ? 'is-invalid' : '' }}"
         required
         autocomplete="current-password"
       >
@@ -45,8 +42,10 @@
       @enderror
     </div>
 
-    <button class="btn btn--primary btn--full" type="submit">ログインする</button>
+    {{-- ログインボタン --}}
+    <button class="auth-button" type="submit">ログインする</button>
 
+    {{-- 会員登録リンク --}}
     <div class="text-center mt-sm">
       <a class="link link--blue" href="{{ route('register') }}">会員登録はこちら</a>
     </div>
