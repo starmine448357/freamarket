@@ -3,7 +3,7 @@
 @section('title', 'メール認証')
 
 @section('content')
-  <div class="auth-container text-center">
+  <div class="verify-container text-center">
     <p>
       登録していただいたメールアドレスに認証メールを送付しました。<br>
       メール認証を完了してください。
@@ -19,7 +19,7 @@
     {{-- 認証メール再送（リンク風ボタン） --}}
     <form method="POST" action="{{ route('verification.send') }}">
       @csrf
-      <button type="submit" class="link link--blue as-link">
+      <button type="submit" class="link-btn">
         認証メールを再送する
       </button>
     </form>

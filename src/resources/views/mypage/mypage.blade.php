@@ -12,7 +12,7 @@
       src="{{ auth()->user()->profile_image_path 
               ? asset('storage/'.auth()->user()->profile_image_path) 
               : asset('images/default-avatar.png') }}" 
-      alt="プロフィール画像"
+      alt=""
       class="avatar avatar--lg"
       style="width:120px;height:120px;border-radius:50%;object-fit:cover">
 
@@ -28,11 +28,11 @@
   @endphp
 
   <div class="mypage__tabs">
-    <a href="{{ route('mypage', ['tab'=>'sell']) }}"
+    <a href="{{ route('mypage', array_merge(request()->query(), ['tab'=>'sell'])) }}"
        class="tab {{ $currentTab==='sell' ? 'tab--active' : '' }}">
       出品した商品
     </a>
-    <a href="{{ route('mypage', ['tab'=>'buy']) }}"
+    <a href="{{ route('mypage', array_merge(request()->query(), ['tab'=>'buy'])) }}"
        class="tab {{ $currentTab==='buy' ? 'tab--active' : '' }}">
       購入した商品
     </a>

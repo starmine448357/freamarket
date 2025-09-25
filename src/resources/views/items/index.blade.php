@@ -13,12 +13,12 @@
 
 @section('content')
   <div class="tabs">
-    <a href="{{ route('items.index') }}"
+    <a href="{{ route('items.index', array_merge(request()->query(), ['tab' => 'recommend'])) }}"
        class="tab {{ $currentTab === 'recommend' ? 'tab--active' : '' }}">
       おすすめ
     </a>
 
-    <a href="{{ route('items.index', ['tab' => 'mylist']) }}"
+    <a href="{{ route('items.index', array_merge(request()->query(), ['tab' => 'mylist'])) }}"
        class="tab {{ $currentTab === 'mylist' ? 'tab--active' : '' }}">
       マイリスト
     </a>

@@ -27,12 +27,17 @@
     text-align: center;
 }
 
+.verify-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding-top: 10vh;
+    text-align: center;
+}
 /* ===== タイトル ===== */
 .auth-title {
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 20px;
-    /* 入力欄との距離はちょうどよく */
 }
 
 /* ===== ラベル ===== */
@@ -77,6 +82,18 @@
 .link.link--blue {
     text-decoration: none;
     color: #0066cc;
+}
+
+/* メール認証再送ボタンをリンク風に */
+.link-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 /* ===== 灰色ボタン ===== */

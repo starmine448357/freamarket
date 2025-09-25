@@ -10,9 +10,8 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 何度実行しても重複しないように
         User::updateOrCreate(
-            ['email' => 'test@example.com'], // 一意キー
+            ['email' => 'test@example.com'],
             [
                 'name' => 'Test User',
                 'password' => Hash::make('password'),
@@ -20,12 +19,9 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // Seeder の実行順：カテゴリ → アイテム
         $this->call([
-            CategorySeeder::class, // 先にカテゴリ
-            ItemSeeder::class,     // 既存のダミー商品
+            CategorySeeder::class,
+            ItemSeeder::class,
         ]);
-
-        // ← ここでの ItemSeeder 単体呼び出しは不要（削除）
     }
 }

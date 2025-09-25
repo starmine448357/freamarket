@@ -19,7 +19,7 @@
         src="{{ auth()->user()->profile_image_path 
                 ? asset('storage/'.auth()->user()->profile_image_path) 
                 : asset('images/default-avatar.png') }}" 
-        alt="プロフィール画像" 
+        alt="" 
         class="avatar avatar--lg"
         style="width:120px;height:120px;border-radius:50%;object-fit:cover">
 
