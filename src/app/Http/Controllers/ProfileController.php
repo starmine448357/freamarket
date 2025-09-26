@@ -38,7 +38,7 @@ class ProfileController extends Controller
             $path = $request->file('profile_image')->store('avatars', 'public');
             $user->profile_image_path = $path;
         }
-
+        
         // 他のプロフィール情報を更新
         $user->name        = $request->input('name');
         $user->postal_code = $request->input('postal_code');
