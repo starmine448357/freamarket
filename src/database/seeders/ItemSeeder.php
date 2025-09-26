@@ -32,10 +32,10 @@ class ItemSeeder extends Seeder
 
         // 課題指定の10件
         $rows = [
-            ['title' => '腕時計','brand'=>'SEIKO','price'=>15000,'description'=>'スタイリッシュなデザインのメンズ腕時計','image'=>'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Armani+Mens+Clock.jpg','cond_jp'=>'良好'],
-            ['title' => 'HDD','brand'=>'Western Digital','price'=>5000,'description'=>'高速で信頼性の高いハードディスク','image'=>'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/HDD+Hard+Disk.jpg','cond_jp'=>'目立った傷や汚れなし'],
+            ['title' => '腕時計','brand'=>null,'price'=>15000,'description'=>'スタイリッシュなデザインのメンズ腕時計','image'=>'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Armani+Mens+Clock.jpg','cond_jp'=>'良好'],
+            ['title' => 'HDD','brand'=>null,'price'=>5000,'description'=>'高速で信頼性の高いハードディスク','image'=>'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/HDD+Hard+Disk.jpg','cond_jp'=>'目立った傷や汚れなし'],
             ['title' => '玉ねぎ3束','brand'=>null,'price'=>300,'description'=>'新鮮な玉ねぎ3束のセット','image'=>'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/iLoveIMG+d.jpg','cond_jp'=>'やや傷や汚れあり'],
-            ['title' => '革靴','brand'=>'REGAL','price'=>4000,'description'=>'クラシックなデザインの革靴','image'=>'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Leather+Shoes+Product+Photo.jpg','cond_jp'=>'状態が悪い'],
+            ['title' => '革靴','brand'=>null,'price'=>4000,'description'=>'クラシックなデザインの革靴','image'=>'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Leather+Shoes+Product+Photo.jpg','cond_jp'=>'状態が悪い'],
             ['title' => 'ノートPC','brand'=>null,'price'=>45000,'description'=>'高性能なノートパソコン','image'=>'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Living+Room+Laptop.jpg','cond_jp'=>'良好'],
             ['title' => 'マイク','brand'=>null,'price'=>8000,'description'=>'高音質のレコーディング用マイク','image'=>'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Music+Mic+4632231.jpg','cond_jp'=>'目立った傷や汚れなし'],
             ['title' => 'ショルダーバッグ','brand'=>null,'price'=>3500,'description'=>'おしゃれなショルダーバッグ','image'=>'https://coachtech-matter.s3.ap-northeast-1.amazonaws.com/image/Purse+fashion+pocket.jpg','cond_jp'=>'やや傷や汚れあり'],
