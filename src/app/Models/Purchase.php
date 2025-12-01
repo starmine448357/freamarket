@@ -9,13 +9,11 @@ class Purchase extends Model
 {
     use HasFactory;
 
-    /**
-     * 複数代入可能な属性
-     */
     protected $fillable = [
-        'user_id',
+        'user_id',              // 出品者
+        'buyer_id',             // 購入者
         'item_id',
-        'amount',               // 金額（price ではなく amount）
+        'amount',
         'payment_method',
         'status',
         'paid_at',
@@ -25,15 +23,23 @@ class Purchase extends Model
     ];
 
     /**
-     * 購入者
+     * 出品者（seller）
      */
-    public function user()
+    public function seller()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
-     * 購入された商品
+     * 購入者（buyer）
+     */
+    public function buyer()
+    {
+        return $this->belongsTo(User::class, 'buyer_id');
+    }
+
+    /**
+     * 商品
      */
     public function item()
     {

@@ -11,9 +11,12 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MyPageController;
-use App\Http\Controllers\TempImageController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RegisterController;
+
+// ★ 追加：チャット & レビュー
+use App\Http\Controllers\TransactionMessageController;
+use App\Http\Controllers\ReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,7 +59,7 @@ Route::post('/logout', [AuthController::class, 'destroy'])
 */
 
 // 認証待ち画面
-Route::get('/email/verify', fn () => view('auth.verify-email'))
+Route::get('/email/verify', fn() => view('auth.verify-email'))
     ->middleware('auth')
     ->name('verification.notice');
 
@@ -84,11 +87,7 @@ Route::post('/email/verification-notification', function (Request $request) {
 */
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // 一時画像アップロード
-    Route::post('/items/image/temp', [TempImageController::class, 'store'])
-        ->name('items.image.temp');
-
-    // マイページ（?tab=buy, ?tab=sell で切替）
+    // マイページ
     Route::get('/mypage', [MyPageController::class, 'show'])->name('mypage');
 
     // プロフィール編集
@@ -119,6 +118,49 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 購入時住所入力
     Route::get('/purchase/address/{item}', [PurchaseController::class, 'editAddress'])->whereNumber('item')->name('purchases.address.edit');
     Route::post('/purchase/address/{item}', [PurchaseController::class, 'updateAddress'])->whereNumber('item')->name('purchases.address.update');
+
+    /*
+    |--------------------------------------------------------------------------
+    | ★★★ 取引チャット（US001〜US003）
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/transaction/{purchaseId}', [TransactionMessageController::class, 'show'])
+        ->name('transaction.chat');
+
+    Route::post('/transaction/{purchaseId}', [TransactionMessageController::class, 'store'])
+        ->name('transaction.chat.store');
+
+    /*
+
+
+    
+    |--------------------------------------------------------------------------
+    | ★★★ 評価（US004〜US005）
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/review/{purchaseId}', [ReviewController::class, 'create'])
+        ->name('review.create');
+
+    Route::post('/review/{purchaseId}', [ReviewController::class, 'store'])
+        ->name('review.store');
+
+    // 取引チャット：メッセージ削除
+    Route::delete(
+        '/transaction/{purchaseId}/message/{messageId}',
+        [TransactionMessageController::class, 'destroy']
+    )->name('transaction.chat.delete');
+
+    // 取引チャット：メッセージ編集画面
+    Route::get(
+        '/transaction/{purchaseId}/message/{messageId}/edit',
+        [TransactionMessageController::class, 'edit']
+    )->name('transaction.chat.edit');
+
+    // 編集した内容の更新
+    Route::put(
+        '/transaction/{purchaseId}/message/{messageId}',
+        [TransactionMessageController::class, 'update']
+    )->name('transaction.chat.update');
 });
 
 /*

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Purchase;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PurchaseRequest;
+use Illuminate\Support\Facades\Log;
 
 class PurchaseController extends Controller
 {
@@ -31,7 +33,7 @@ class PurchaseController extends Controller
      */
     public function store(PurchaseRequest $request, Item $item)
     {
-        // 確認ボタン時 → そのまま戻す
+        // 「確認」の場合は戻す
         if ($request->input('action') === 'confirm') {
             return back()->withInput();
         }
@@ -43,13 +45,16 @@ class PurchaseController extends Controller
         $building  = $validated['shipping_building'] ?? '';
 
         try {
-            // Stripe Checkout セッション作成
             $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
 
+            // Stripe セッション生成
             $session = $stripe->checkout->sessions->create([
                 'mode' => 'payment',
-                'payment_method_types' => $payment === 'card' ? ['card'] : ['konbini'],
+                'payment_method_types' => $payment === 'card'
+                    ? ['card']
+                    : ['konbini'],
                 'customer_email' => optional(Auth::user())->email,
+
                 'line_items' => [[
                     'price_data' => [
                         'currency' => 'jpy',
@@ -60,8 +65,10 @@ class PurchaseController extends Controller
                     ],
                     'quantity' => 1,
                 ]],
-                'success_url' => route('purchases.success', $item) . '?session_id={CHECKOUT_SESSION_ID}',
+
+                'success_url' => url('/purchase/' . $item->id . '/success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url'  => route('purchases.cancel', $item),
+
                 'metadata'    => [
                     'item_id'   => (string) $item->id,
                     'buyer_id'  => (string) Auth::id(),
@@ -73,9 +80,9 @@ class PurchaseController extends Controller
             ]);
 
             return redirect()->away($session->url);
-
         } catch (\Throwable $e) {
-            \Log::error('Stripe checkout error', [
+
+            Log::error('Stripe checkout error', [
                 'message'  => $e->getMessage(),
                 'item_id'  => $item->id,
                 'buyer_id' => Auth::id(),
@@ -89,12 +96,47 @@ class PurchaseController extends Controller
     }
 
     /**
-     * 決済成功後（暫定）
-     * 本番では Webhook で checkout.session.completed を受けて処理するのが安全
+     * 決済成功
      */
     public function success(Item $item)
     {
-        return view('purchases.success', compact('item'));
+        $sessionId = request()->query('session_id');
+        if (!$sessionId) {
+            return redirect()->route('items.show', $item->id);
+        }
+
+        $stripe = new \Stripe\StripeClient(config('services.stripe.secret'));
+        $session = $stripe->checkout->sessions->retrieve($sessionId);
+
+        $metadata = $session->metadata;
+        $buyerId  = Auth::id();
+
+        // レコードがなければ新規作成
+        if (!Purchase::where('item_id', $metadata->item_id)->exists()) {
+
+            Purchase::create([
+                'user_id'               => $item->user_id,
+                'buyer_id'              => $buyerId,
+                'item_id'               => $metadata->item_id,
+                'payment_method'        => $metadata->payment,
+                'amount'                => $item->price,
+                'shipping_postal_code'  => $metadata->postal,
+                'shipping_address'      => $metadata->address,
+                'shipping_building'     => $metadata->building,
+
+                // ✔ コントローラー仕様：初期ステータスは "pending"
+                'status'                => 'pending',
+
+                'paid_at'               => now(),
+            ]);
+        }
+
+        // ✔ Item は購入されたので "sold"
+        $item->update([
+            'status' => 'sold',
+        ]);
+
+        return redirect()->route('mypage');
     }
 
     /**

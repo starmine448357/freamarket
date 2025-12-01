@@ -1,5 +1,5 @@
 /* ================================
-   Mypage Styles (改良版)
+   Mypage Styles（完全改訂版）
    ================================ */
 
 :root {
@@ -17,7 +17,9 @@
     padding: 24px 16px 60px;
 }
 
-/* ===== ヘッダー部分 ===== */
+/* ================================
+   ヘッダー
+================================ */
 .mypage__header {
     display: flex;
     justify-content: center;
@@ -30,9 +32,8 @@
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: #ccc;
-    flex-shrink: 0;
     object-fit: cover;
+    background: #ccc;
 }
 
 .mypage__info {
@@ -66,10 +67,11 @@
 
 .btn--outline:hover {
     background: #fff5f6;
-    color: var(--brand);
 }
 
-/* ===== タブ部分 ===== */
+/* ================================
+   タブ
+================================ */
 .mypage__tabs {
     display: flex;
     gap: 40px;
@@ -91,7 +93,6 @@
     color: var(--text);
 }
 
-/* アクティブ */
 .tab--active {
     color: var(--brand);
 }
@@ -107,12 +108,18 @@
     border-radius: 2px;
 }
 
-/* ===== 商品一覧部分 ===== */
+/* ================================
+   商品一覧（Grid）
+================================ */
 .mypage__items {
     margin-top: 32px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 24px;
+}
+
+.mypage-item {
+    width: 100%;
 }
 
 .item-link {
@@ -124,25 +131,48 @@
 }
 
 .item-thumb {
-    position: relative;
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #eee;
 }
 
 .item-img {
     width: 100%;
-    height: 200px;
+    height: 100%;
     object-fit: cover;
-    border-radius: 8px;
 }
 
-.product-name-price {
+/* ================================
+   商品名・価格
+================================ */
+.product-info {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
+    /* 左揃え */
     margin-top: 8px;
     font-size: 14px;
     font-weight: 600;
 }
 
-/* まだ商品がない場合 */
+.product-name {
+    margin-bottom: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.product-price {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* ================================
+   商品がない場合
+================================ */
 .muted {
     color: var(--text-sub);
     font-size: 14px;
@@ -150,7 +180,9 @@
     text-align: center;
 }
 
-/* ===== レスポンシブ ===== */
+/* ================================
+   レスポンシブ
+================================ */
 @media (max-width: 600px) {
     .mypage__header {
         flex-direction: column;
@@ -166,20 +198,8 @@
     .mypage__items {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     }
-}
 
-.product-info {
-    display: flex;
-    flex-direction: column;
-    /* 縦並び */
-    align-items: flex-start;
-    /* 中央寄せ */
-    margin-top: 8px;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.product-name {
-    margin-bottom: 4px;
-    /* 商品名と価格の間に余白 */
+    .item-link {
+        max-width: 160px;
+    }
 }

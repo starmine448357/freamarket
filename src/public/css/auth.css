@@ -1,139 +1,186 @@
-/* ===== ベース ===== */
+/* =============================================
+   共通：認証フォーム（ログイン/会員登録/認証メール）
+============================================= */
+
+/* ---- 全体 ---- */
 .auth-body {
     margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", sans-serif;
+    font-family: "Inter", "Noto Sans JP", sans-serif;
     background-color: #fff;
 }
 
-/* ===== ヘッダー ===== */
+/* ---- ヘッダー ---- */
 .auth-header {
-    display: flex;
-    align-items: center;
-    padding: 16px 20px;
     background-color: #000;
+    padding: 14px 24px;
 }
 
 .auth-header__logo {
-    height: 40px;
-    width: auto;
-    display: block;
+    height: 42px;
 }
 
-/* ===== コンテナ ===== */
+/* ---- フォームコンテナ ---- */
 .auth-container {
-    max-width: 400px;
-    margin: 80px auto;
-    /* ← 上下だけしっかり余白 */
+    width: 100%;
+    max-width: 800px;
+    /* ←ここを400→600へ拡大 */
+    background-color: #fff;
+    padding: 60px 50px;
+    /* ←勤怠管理と同じ余白に */
+    border-radius: 8px;
+    margin: 50px auto;
     text-align: center;
 }
 
-.verify-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding-top: 10vh;
-    text-align: center;
-}
-/* ===== タイトル ===== */
 .auth-title {
-    font-size: 1.5rem;
+    font-size: 28px;
     font-weight: bold;
-    margin-bottom: 20px;
+    text-align: center;
 }
 
-/* ===== ラベル ===== */
+/* ---- ラベル ---- */
 .auth-label {
     display: block;
-    font-size: 0.9rem;
+    font-size: 18px;
     font-weight: bold;
+    margin: 28px 0 12px;
     text-align: left;
-    margin: 12px 0 6px;
 }
 
-/* ===== 入力欄 ===== */
+/* 入力欄どうしの間隔を広げる */
+.form-field {
+    margin-bottom: 28px;
+    /* ← 好きな数値に調整できる */
+}
+
+/* ボタンと上のフォームの間隔を広げる */
+.auth-button {
+    margin-top: 36px;
+    /* ← 大きめにして余白を取る */
+    padding: 14px;
+    /* ← ボタン自体の高さUP（任意） */
+}
+
+/* ---- 入力欄 ---- */
 .auth-input {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ccc;
+    height: 55px;
+    border: 1.5px solid #000;
     border-radius: 4px;
-    font-size: 1rem;
+    padding: 10px 14px;
+    font-size: 17px;
     box-sizing: border-box;
 }
 
-/* ===== ボタン ===== */
+/* ---- 大ボタン（ログイン/登録） ---- */
 .auth-button {
     width: 100%;
-    margin: 16px 0 20px;
-    padding: 12px;
-    background-color: #ff5a5a;
-    color: #fff;
-    font-size: 1rem;
+    margin-top: 45px;
+    height: 55px;
+    font-size: 18px;
     font-weight: bold;
     border: none;
     border-radius: 4px;
+    background-color: #ff5a5a;
+    color: #fff;
     cursor: pointer;
-    box-sizing: border-box;
+    transition: 0.2s;
 }
 
 .auth-button:hover {
     background-color: #e14a4a;
 }
 
-/* ===== リンク ===== */
-.link.link--blue {
+/* ---- 下部リンク ---- */
+.link {
+    display: block;
+    text-align: center;
+    color: #007bff;
+    font-size: 15px;
+    margin-top: 26px;
     text-decoration: none;
-    color: #0066cc;
 }
 
-/* メール認証再送ボタンをリンク風に */
+.link:hover {
+    text-decoration: underline;
+}
+
+/* ---- グレーのボタン（認証メール再送など） ---- */
+.btn--secondary {
+    display: inline-block;
+    width: 100%;
+    padding: 16px;
+    background-color: #E0E0E0;
+    color: #000;
+    font-weight: bold;
+    border-radius: 6px;
+    border: 1.5px solid #000;
+    cursor: pointer;
+    margin-top: 40px;
+    text-decoration: none;
+}
+
+.btn--secondary:hover {
+    background-color: #CFCFCF;
+}
+
+/* ---- バリデーションエラー ---- */
+.form__error {
+    color: #FF3B30;
+    font-size: 15px;
+    margin-top: 6px;
+    font-weight: 600;
+}
+
+/* ---- 認証メールページ ---- */
+.verify-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: 15vh;
+    text-align: center;
+}
+
+.verify-container p {
+    font-size: 22px;
+    color: #000;
+    line-height: 1.7;
+    margin-bottom: 40px;
+    font-weight: 700;
+}
+
+/* ---- リンクボタン ---- */
 .link-btn {
+    margin-top: 20px;
+    font-size: 16px;
     background: none;
     border: none;
-    padding: 0;
-    margin-top: 8px;
-    font-size: 14px;
     color: #007bff;
     text-decoration: underline;
     cursor: pointer;
 }
 
-/* ===== 灰色ボタン ===== */
-.btn--secondary {
-    display: inline-block;
-    width: 100%;
-    padding: 12px;
-    background: #e0e0e0;
-    color: #000;
-    font-weight: bold;
-    border: none;
-    border-radius: 4px;
-    text-decoration: none;
-    cursor: pointer;
-    box-sizing: border-box;
+.link-btn:hover {
+    opacity: 0.8;
 }
 
-.btn--secondary:hover {
-    background: #d5d5d5;
-}
-
-/* ===== レスポンシブ ===== */
-@media (max-width: 850px) {
+/* ---- スマホ対応 ---- */
+@media (max-width: 768px) {
     .auth-container {
-        max-width: 90%;
-        margin: 60px auto;
+        padding: 40px 30px;
     }
 
     .auth-title {
-        font-size: 1.3rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .auth-container {
-        max-width: 100%;
-        margin: 40px auto;
+        font-size: 24px;
     }
 
-    .auth-title {
-        font-size: 1.2rem;
+    .auth-input {
+        height: 48px;
+        font-size: 15px;
+    }
+
+    .auth-button {
+        height: 48px;
+        font-size: 16px;
     }
 }
