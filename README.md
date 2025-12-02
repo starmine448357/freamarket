@@ -28,9 +28,6 @@
 6. php artisan migrate:fresh --seed  
 7. php artisan storage:link  
 
-8. 本リポジトリに含まれる .env.example の Stripe API キーは ダミー値 です。
-ご自身の環境で動作確認を行う場合は、Stripe ダッシュボードで発行される
-テスト用 API キー（Publishable key / Secret key） を .env に設定してください。
 ---
 
 ## 初期データ（ダミーデータ）
@@ -43,6 +40,32 @@
 | 出品者C | userC@example.com| 出品なし |
 
 ※ パスワードは全員 `password`
+
+---
+
+## Stripeについて
+コンビニ支払いとカード支払いのオプションがありますが、決済画面にてコンビニ支払いを選択しますと、レシートを印刷する画面に遷移します。そのため、カード支払いを成功させた場合に意図する画面遷移が行える想定です。<br>
+
+また、StripeのAPIキーは以下のように設定をお願いいたします。
+```
+STRIPE_PUBLIC_KEY="パブリックキー"
+STRIPE_SECRET_KEY="シークレットキー"
+```
+
+以下のリンクは公式ドキュメントです。<br>
+https://docs.stripe.com/payments/checkout?locale=ja-JP
+
+---
+
+## メール認証について
+このアプリでは MailHog を使用してメール認証（確認メール送信）の動作確認を行います。
+
+Docker を起動すると MailHog も自動的に立ち上がります。
+Docker 起動後、ブラウザで以下にアクセスしてください：
+
+　http://localhost:8025/
+
+ここに送信されたメールが一覧表示されます。
 
 ---
 
