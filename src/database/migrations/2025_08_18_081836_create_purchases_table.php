@@ -11,13 +11,19 @@ return new class extends Migration {
             $table->id();
 
             // 出品者
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade');
 
             // 購入者
-            $table->foreignId('buyer_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('buyer_id')
+                ->constrained('users')
+                ->onDelete('cascade');
 
             // 商品
-            $table->foreignId('item_id')->constrained()->onDelete('cascade');
+            $table->foreignId('item_id')
+                ->constrained()
+                ->onDelete('cascade');
 
             // 支払い方法
             $table->enum('payment_method', [
@@ -26,17 +32,18 @@ return new class extends Migration {
                 'bank_transfer',
             ]);
 
+            // 金額
             $table->integer('amount');
 
-            // 配送先情報
+            // 配送先
             $table->string('shipping_postal_code', 20);
             $table->string('shipping_address', 255);
             $table->string('shipping_building', 255)->nullable();
 
             /**
-             * ▼ 取引ステータス（コントローラー仕様に完全一致）
-             * 
-             * pending         … 購入直後（初期状態）
+             * ▼ 取引ステータス（コントローラー仕様と完全一致）
+             *
+             * pending         … 購入直後（初期）
              * buyer_reviewed  … 購入者レビュー済み
              * completed       … 双方レビュー済み（取引完了）
              */

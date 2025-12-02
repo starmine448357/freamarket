@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class Item extends Model
 {
@@ -32,9 +31,9 @@ class Item extends Model
         'condition_label',
     ];
 
-    /* ========================
-          リレーション
-       ======================== */
+    /* ==========================================
+        リレーション
+       ========================================== */
 
     public function user()
     {
@@ -68,17 +67,21 @@ class Item extends Model
         return $this->hasOne(Purchase::class, 'item_id');
     }
 
-    /* ========================
-          アクセサ
-       ======================== */
+    /* ==========================================
+        アクセサ
+       ========================================== */
 
-    /** 売り切れ判定 */
+    /**
+     * 売り切れ判定
+     */
     public function getIsSoldAttribute(): bool
     {
         return $this->purchase()->exists();
     }
 
-    /** 状態ラベル */
+    /**
+     * 状態ラベル
+     */
     public function getConditionLabelAttribute(): string
     {
         $map = [

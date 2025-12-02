@@ -16,17 +16,17 @@ return new class extends Migration
                 ->constrained('purchases')
                 ->cascadeOnDelete();
 
-            // ★ 評価したユーザー（購入者 or 出品者）
+            // 評価したユーザー（購入者 or 出品者）
             $table->foreignId('reviewer_id')
                 ->constrained('users')
                 ->cascadeOnDelete();
 
-            // ★ 評価されたユーザー（出品者 or 購入者）
+            // 評価されたユーザー（出品者 or 購入者）
             $table->foreignId('target_id')
                 ->constrained('users')
                 ->cascadeOnDelete();
 
-            // 評価（1〜5）
+            // 評価（0〜5）
             $table->unsignedTinyInteger('rating');
 
             // コメント（任意）

@@ -10,8 +10,8 @@ class Purchase extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',              // 出品者
-        'buyer_id',             // 購入者
+        'user_id',              
+        'buyer_id',            
         'item_id',
         'amount',
         'payment_method',
@@ -21,6 +21,10 @@ class Purchase extends Model
         'shipping_address',
         'shipping_building',
     ];
+
+    /* ==========================================
+        リレーション
+       ========================================== */
 
     /**
      * 出品者（seller）
@@ -44,5 +48,13 @@ class Purchase extends Model
     public function item()
     {
         return $this->belongsTo(Item::class);
+    }
+
+    /**
+     * 取引チャットのメッセージ
+     */
+    public function messages()
+    {
+        return $this->hasMany(\App\Models\TransactionMessage::class);
     }
 }

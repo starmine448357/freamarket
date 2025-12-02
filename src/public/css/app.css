@@ -1,6 +1,6 @@
 /* =======================
-   Base
-   ======================= */
+   基本設定
+======================= */
 *,
 *::before,
 *::after {
@@ -21,9 +21,10 @@
     color: inherit;
 }
 
+
 /* =======================
-   Header
-   ======================= */
+   ヘッダー
+======================= */
 .header {
     position: sticky;
     top: 0;
@@ -47,12 +48,15 @@
 }
 
 .site-logo {
-    height: 40px;
+    height: 50px;
     width: auto;
     display: block;
 }
 
-/* 検索エリア */
+
+/* =======================
+   検索バー
+======================= */
 .header__center {
     flex: 1;
     display: flex;
@@ -67,14 +71,13 @@
 
 .search__input {
     width: 100%;
-    max-width: 560px;
-    margin: 0 auto;
-    padding: 10px 14px;
-    font-size: 16px;
-    border: 1px solid #fff;
+    max-width: 620px;
+    padding: 14px 18px;
+    font-size: 18px;
+    border: 2px solid #fff;
     background: #fff;
     color: #111;
-    border-radius: 6px;
+    border-radius: 8px;
 }
 
 .search__input::placeholder {
@@ -83,10 +86,13 @@
 
 .search__input:focus {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, .35);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
 }
 
-/* 右ナビゲーション */
+
+/* =======================
+   ヘッダーナビ
+======================= */
 .nav {
     margin-left: auto;
     display: flex;
@@ -96,15 +102,18 @@
 
 .nav__link {
     color: #e5e7eb;
+    font-size: 30px;
+    padding: 6px 10px;
 }
 
 .nav__link:hover {
     color: #fff;
 }
 
+
 /* =======================
-   Buttons
-   ======================= */
+   ボタン
+======================= */
 .btn {
     padding: 8px 14px;
     border-radius: 8px;
@@ -112,8 +121,9 @@
     font-weight: 600;
 }
 
-/* 出品ボタン（白背景・黒文字） */
 .btn--sell {
+    padding: 12px 20px;
+    font-size: 17px;
     background: #fff;
     color: #000;
     border: 1px solid #fff;
@@ -126,16 +136,20 @@
     border-color: #fff;
 }
 
+
 /* =======================
-   Main container
-   ======================= */
+   コンテナ
+======================= */
 .container {
     padding: 24px 16px;
     max-width: 1040px;
     margin: 0 auto;
 }
 
-/* Flashメッセージ */
+
+/* =======================
+   フラッシュメッセージ
+======================= */
 .flash {
     background: #e6ffed;
     border: 1px solid #b7f5c5;
@@ -143,9 +157,10 @@
     border-radius: 8px;
 }
 
+
 /* =======================
-   Responsive
-   ======================= */
+   レスポンシブ
+======================= */
 @media (max-width: 900px) {
     .header {
         flex-wrap: wrap;
@@ -178,9 +193,10 @@
     }
 }
 
+
 /* =======================
-   Accessibility
-   ======================= */
+   アクセシビリティ
+======================= */
 .nav__link:focus-visible,
 .btn:focus-visible,
 .search__input:focus-visible {
@@ -189,9 +205,10 @@
     box-shadow: none;
 }
 
+
 /* =======================
-   Validation
-   ======================= */
+   バリデーション
+======================= */
 .error,
 .form-error {
     color: #ef4444;

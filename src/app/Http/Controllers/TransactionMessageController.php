@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Purchase;
 use App\Models\TransactionMessage;
+use App\Models\PurchaseUserRead;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\TransactionMessageRequest;
 
@@ -16,27 +17,44 @@ class TransactionMessageController extends Controller
     {
         $user = Auth::user();
 
+        // -------------------------------------------------
         // ▼ 取引情報
-        $purchase = Purchase::with([
-            'item.user',
-            'buyer',
-        ])->findOrFail($purchaseId);
+        // -------------------------------------------------
+        $purchase = Purchase::with(['item.user', 'buyer'])
+            ->findOrFail($purchaseId);
 
-        // ▼ 出品者判定
+        // 出品者判定
         $isSeller = ($purchase->item->user_id === $user->id);
 
-        // ▼ 関係者チェック
+        // 関係者チェック（購入者 or 出品者）
         if (!($purchase->buyer_id === $user->id || $isSeller)) {
             abort(403);
         }
 
+        // -------------------------------------------------
+        // ▼ 既読更新
+        // -------------------------------------------------
+        PurchaseUserRead::updateOrCreate(
+            [
+                'purchase_id' => $purchase->id,
+                'user_id'     => $user->id,
+            ],
+            [
+                'last_read_at' => now(),
+            ]
+        );
+
+        // -------------------------------------------------
         // ▼ メッセージ一覧
+        // -------------------------------------------------
         $messages = TransactionMessage::with('user')
             ->where('purchase_id', $purchaseId)
             ->orderBy('created_at')
             ->get();
 
-        // ▼ サイドバー（取引中）
+        // -------------------------------------------------
+        // ▼ サイドバー用：取引中一覧
+        // -------------------------------------------------
         $relatedPurchases = Purchase::with('item')
             ->where(function ($q) use ($user) {
 
@@ -60,17 +78,18 @@ class TransactionMessageController extends Controller
         return view('transaction.chat', compact(
             'purchase',
             'messages',
-            'relatedPurchases'
+            'relatedPurchases',
         ));
     }
 
     /**
-     * 編集
+     * 編集フォーム表示
      */
     public function edit($purchaseId, $messageId)
     {
         $message = TransactionMessage::findOrFail($messageId);
 
+        // 自分のメッセージ以外は編集不可
         if ($message->user_id !== Auth::id()) {
             abort(403);
         }
@@ -85,6 +104,7 @@ class TransactionMessageController extends Controller
     {
         $message = TransactionMessage::findOrFail($messageId);
 
+        // 権限チェック（投稿者本人のみ）
         if ($message->user_id !== Auth::id()) {
             abort(403);
         }
@@ -93,7 +113,8 @@ class TransactionMessageController extends Controller
             'message' => $request->message,
         ]);
 
-        return redirect()->route('transaction.chat', $purchaseId)
+        return redirect()
+            ->route('transaction.chat', $purchaseId)
             ->with('success', 'メッセージを更新しました');
     }
 
@@ -104,50 +125,59 @@ class TransactionMessageController extends Controller
     {
         $message = TransactionMessage::findOrFail($messageId);
 
+        // 権限チェック
         if ($message->user_id !== Auth::id()) {
             abort(403);
         }
 
         $message->delete();
 
-        return redirect()->route('transaction.chat', $purchaseId)
+        return redirect()
+            ->route('transaction.chat', $purchaseId)
             ->with('success', 'メッセージを削除しました');
     }
 
     /**
-     * メッセージ投稿（FormRequest 使用版）
+     * メッセージ投稿（FormRequest 使用）
      */
     public function store(TransactionMessageRequest $request, $purchaseId)
     {
-        $user = Auth::user();
+        $user     = Auth::user();
         $purchase = Purchase::with('item')->findOrFail($purchaseId);
 
         $isSeller = ($purchase->item->user_id === $user->id);
 
+        // 関係者チェック
         if (!($purchase->buyer_id === $user->id || $isSeller)) {
             abort(403);
         }
 
-        // 本文が空 & 画像も空 → NG（仕様書 FN006）
+        // 本文も画像も空 → エラー
         if (!$request->message && !$request->file('image')) {
             return back()->withErrors([
                 'message' => '本文を入力してください',
             ])->withInput();
         }
 
-        // 画像保存
+        // -------------------------------------------------
+        // ▼ 画像保存（任意）
+        // -------------------------------------------------
         $imagePath = null;
         if ($request->file('image')) {
             $imagePath = $request->file('image')->store('chat_images', 'public');
         }
 
-        // 保存
+        // -------------------------------------------------
+        // ▼ メッセージ保存
+        // -------------------------------------------------
         TransactionMessage::create([
             'purchase_id' => $purchase->id,
             'user_id'     => $user->id,
             'message'     => $request->message,
             'image_path'  => $imagePath,
         ]);
+
+        // ★ ドラフト機能は localStorage → サーバー側は何もしない
 
         return redirect()->route('transaction.chat', $purchaseId);
     }

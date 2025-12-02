@@ -1,31 +1,27 @@
 /* ===============================
    全体レイアウト
 ================================ */
-
 html,
 body {
     margin: 0;
     padding: 0;
     height: 100%;
     font-size: 18px;
-    /* 全体文字拡大 */
 }
 
+/* Chatヘッダー（上部黒帯） */
 .chat-header-only {
     width: 100%;
     height: 110px;
-    /* 70px → 大きく */
     background: #000;
     display: flex;
     align-items: center;
     padding-left: 40px;
-    /* 左余白倍増 */
     box-sizing: border-box;
 }
 
 .chat-logo img {
     height: 50px;
-    /* ロゴ拡大 */
 }
 
 .transaction-wrapper {
@@ -60,7 +56,6 @@ body {
     display: flex;
     flex-direction: column;
     text-align: center;
-    /* ← ★ 全て中央寄せ */
 }
 
 .sidebar-title {
@@ -68,28 +63,27 @@ body {
     color: #fff;
     margin-bottom: 30px;
     text-align: center;
-    /* ← 念のため個別にも指定 */
 }
 
 .sidebar-item {
-    background: #dadada;
+    background: #d4d4d4;
     padding: 20px 25px;
     margin-bottom: 18px;
     border-radius: 8px;
     display: block;
     text-decoration: none;
-    color: #333;
+    color: #000;
     font-size: 20px;
     font-weight: bold;
     text-align: center;
-    /* ← ★ 文字を中央寄せ */
 }
 
 .sidebar-item.active {
-    background: #ffffff;
+    background: #fff;
 }
+
 /* ===============================
-   メイン
+   メイン（チャットメイン）
 ================================ */
 .chat-main {
     flex: 1;
@@ -99,7 +93,7 @@ body {
 }
 
 /* ===============================
-   取引ヘッダー
+   取引ヘッダー（名前＋取引完了）
 ================================ */
 .chat-header {
     display: flex;
@@ -121,7 +115,7 @@ body {
 
 .finish-btn {
     background: #FF8282;
-    color: white;
+    color: #fff;
     border: none;
     padding: 14px 20px;
     font-size: 21px;
@@ -171,7 +165,6 @@ body {
     margin-bottom: 80px;
 }
 
-/* メッセージ1件 */
 .message-row {
     display: flex;
     flex-direction: column;
@@ -211,7 +204,7 @@ body {
     flex-shrink: 0;
 }
 
-/* 名前 */
+/* ユーザー名 */
 .user-name {
     font-size: 22px;
     font-weight: 500;
@@ -254,15 +247,12 @@ body {
 
 .chat-image {
     max-width: 600px;
-    /* ← 画像の最大幅（大きさを決める） */
     width: 100%;
-    /* ← バブル内に合わせて縮む */
     border-radius: 10px;
     margin-top: 10px;
 }
 
-
-/* 編集/削除 */
+/* 編集／削除リンク */
 .msg-actions {
     display: flex;
     gap: 22px;
@@ -298,7 +288,7 @@ body {
 }
 
 .image-add-btn {
-    background: #ffffff;
+    background: #fff;
     color: #FF5555;
     border: 3px solid #FF5555;
     border-radius: 10px;
@@ -313,6 +303,7 @@ body {
 .image-input {
     display: none;
 }
+
 .send-btn {
     background: none;
     border: none;
@@ -339,8 +330,6 @@ body {
 /* ===============================
    編集モード（吹き出し編集）
 ================================ */
-
-/* 吹き出し内の textarea */
 .edit-textarea {
     width: 100%;
     min-height: 120px;
@@ -352,7 +341,6 @@ body {
     box-sizing: border-box;
 }
 
-/* 保存 / キャンセル ボタン */
 .edit-actions {
     display: flex;
     gap: 18px;
@@ -380,14 +368,14 @@ body {
 
 .edit-save {
     background: #FF5555;
-    color: #ffffff;}
+    color: #fff;
+}
 
 .edit-cancel {
     background: #ccc;
     color: #333;
 }
 
-/* 編集・削除テキストボタン */
 .msg-edit,
 .msg-delete {
     background: none;
@@ -396,17 +384,17 @@ body {
     color: #777;
     cursor: pointer;
     padding: 0;
-    text-shadow: 0px 4px 4px #00000040;}
+    text-shadow: 0px 4px 4px #00000040;
+}
 
-/* form が横に伸びないように */
 .edit-trigger-form,
 .delete-form {
     display: inline;
 }
 
-/* =============================
-   モーダル全体（背景透明）
-=============================*/
+/* ===============================
+   モーダル（レビュー）
+================================ */
 .review-modal {
     display: none;
     position: fixed;
@@ -420,26 +408,20 @@ body {
     z-index: 9999;
 }
 
-/* =====================================
-   モーダルボックス（左右の余白を減らす）
-=====================================*/
+/* モーダルボックス */
 .review-modal-content {
     width: 480px;
     background: #FFFBDB;
     border-radius: 12px;
     padding: 20px 25px;
-    /* ← ここで “四隅に寄せる” */
     text-align: left;
-    border: 2px solid #000000;
+    border: 2px solid #000;
 }
 
-/* タイトル */
 .modal-title {
     margin-bottom: 8px;
-    /* ← さらに詰めて良い */
 }
 
-/* サブタイトル */
 .modal-sub {
     margin-bottom: 14px;
     color: #868686;
@@ -451,28 +433,21 @@ body {
     margin: 2px 0 6px 4px;
 }
 
-/* =====================================
-   区切り線
-=====================================*/
+/* 区切り線 */
 .modal-divider {
     width: calc(100% + 50px);
-    /* padding25px × 2 */
     margin: 12px -25px;
     height: 2px;
     background: #000;
 }
 
-/* =====================================
-   星（左から右へ並ぶ & 大きく中央に配置）
-=====================================*/
+/* 星（レビュー用） */
 .modal-stars {
     display: flex;
     justify-content: space-between;
+    flex-direction: row-reverse;
     width: 100%;
     margin: 8px 0 16px;
-    padding: 0;
-    flex-direction: row-reverse;
-    /* ← ★ これを必ず row に！ */
 }
 
 .modal-stars input {
@@ -486,7 +461,6 @@ body {
     transition: 0.2s;
 }
 
-/* ホバー/選択色（左から右） */
 .modal-stars input:checked~label {
     color: #FFF048;
 }
@@ -496,6 +470,7 @@ body {
     color: #FFF048;
 }
 
+/* エラーメッセージ（入力欄下） */
 .chat-error-box {
     position: absolute;
     bottom: 120px;
@@ -508,9 +483,7 @@ body {
     border-radius: 6px;
 }
 
-/* =====================================
-   ボタン（右上寄り）
-=====================================*/
+/* ボタン（右上寄せ） */
 .modal-buttons.single {
     display: flex;
     justify-content: flex-end;

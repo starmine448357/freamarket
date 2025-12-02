@@ -90,6 +90,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // マイページ
     Route::get('/mypage', [MyPageController::class, 'show'])->name('mypage');
 
+    Route::post('/items/image/temp', [ItemController::class, 'uploadTemp'])
+        ->middleware(['auth', 'verified'])
+        ->name('items.image.temp');
+
     // プロフィール編集
     Route::get('/mypage/profile', [ProfileController::class, 'edit'])->name('mypage.profile.edit');
     Route::put('/mypage/profile', [ProfileController::class, 'update'])->name('mypage.profile.update');
@@ -129,7 +133,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/transaction/{purchaseId}', [TransactionMessageController::class, 'store'])
         ->name('transaction.chat.store');
-
     /*
 
 

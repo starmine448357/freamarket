@@ -6,11 +6,17 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class TransactionMessageRequest extends FormRequest
 {
+    /**
+     * 認可（権限チェックはコントローラー側で実施済み）
+     */
     public function authorize(): bool
     {
-        return true; // 認可は別でチェック済み
+        return true;
     }
 
+    /**
+     * バリデーションルール
+     */
     public function rules(): array
     {
         return [
@@ -19,6 +25,9 @@ class TransactionMessageRequest extends FormRequest
         ];
     }
 
+    /**
+     * エラーメッセージ
+     */
     public function messages(): array
     {
         return [

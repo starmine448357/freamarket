@@ -9,19 +9,27 @@ return new class extends Migration {
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+            // 出品者
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade');
+
             $table->string('title', 255);
             $table->string('brand', 255)->nullable();
             $table->text('description')->nullable();
             $table->integer('price');
+
+            // 状態（enum）
             $table->enum('condition', ['new', 'like_new', 'used']);
+
             $table->string('image_path', 255)->nullable();
 
             /**
              * ▼ 商品ステータス（コントローラー仕様と統一）
              *
              * selling … 出品中（初期状態）
-             * sold    … 購入後（取引中 or 完了に関係なく sold のまま）
+             * sold    … 購入後（取引中 or 完了に関係なく常に sold）
              */
             $table->enum('status', [
                 'selling',

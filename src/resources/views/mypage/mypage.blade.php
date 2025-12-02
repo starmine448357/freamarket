@@ -6,46 +6,63 @@
 @endsection
 
 @section('content')
+
+{{-- =========================
+        プロフィールブロック
+========================= --}}
 <div class="mypage">
 
-  {{-- =========================
-          プロフィール
-    ========================== --}}
   <div class="mypage__header">
-    <img
-      src="{{ auth()->user()->profile_image_path
-                    ? asset('storage/'.auth()->user()->profile_image_path)
-                    : asset('images/default-avatar.png') }}"
-      alt=""
-      class="avatar avatar--lg"
-      style="width:120px;height:120px;border-radius:50%;object-fit:cover">
 
-    <div class="mypage__info">
-      <h1 class="mypage__name">{{ auth()->user()->name }}</h1>
-      <a href="{{ route('mypage.profile.edit') }}" class="btn btn--outline">
-        プロフィールを編集
-      </a>
+    {{-- ▼ 左：アイコン＋名前＋星 --}}
+    <div class="mypage__left">
+      <img
+        src="{{ auth()->user()->profile_image_path
+                      ? asset('storage/'.auth()->user()->profile_image_path)
+                      : asset('images/default-avatar.png') }}"
+        alt=""
+        class="avatar avatar--lg">
+
+      <div class="mypage__user-block">
+        <h1 class="mypage__name">{{ auth()->user()->name }}</h1>
+
+        @if(!empty($ratingAvgRounded))
+        <div class="rating-stars">
+          @for ($i = 1; $i <= 5; $i++)
+            <span class="star {{ $i <= $ratingAvgRounded ? 'star--on' : 'star--off' }}">★</span>
+            @endfor
+        </div>
+        @endif
+      </div>
     </div>
-  </div>
 
-  @php
-  // ★ デフォルトは出品した商品タブ
-  $currentTab = request('tab', 'sell');
+    {{-- ▼ 右：プロフィール編集 --}}
+    <a href="{{ route('mypage.profile.edit') }}" class="btn btn--outline">
+      プロフィールを編集
+    </a>
 
-  // ★ タブ別リスト（Controller で渡している想定）
-  if ($currentTab === 'buy') {
-  $list = $purchasedItems ?? [];
-  } elseif ($currentTab === 'transaction') {
-  $list = $transactionItems ?? [];
-  } else {
-  $list = $sellingItems ?? [];
-  }
-  @endphp
+  </div>{{-- /.mypage__header --}}
+</div>{{-- /.mypage --}}
 
 
-  {{-- =========================
-          タブ（出品 / 購入 / 取引中）
-    ========================== --}}
+@php
+// ★ デフォルトは出品した商品タブ
+$currentTab = request('tab', 'sell');
+
+if ($currentTab === 'buy') {
+$list = $purchasedItems ?? [];
+} elseif ($currentTab === 'transaction') {
+$list = $transactionItems ?? [];
+} else {
+$list = $sellingItems ?? [];
+}
+@endphp
+
+
+{{-- =========================
+      タブ（全幅）
+========================= --}}
+<div class="mypage__tabs-wrapper">
   <div class="mypage__tabs">
 
     <a href="{{ route('mypage', ['tab'=>'sell']) }}"
@@ -61,48 +78,47 @@
     <a href="{{ route('mypage', ['tab'=>'transaction']) }}"
       class="tab {{ $currentTab==='transaction' ? 'tab--active' : '' }}">
       取引中の商品
+
+      {{-- ▼ タブ横の総未読数 --}}
+      @if(isset($totalUnread) && $totalUnread > 0)
+      <span class="tab-badge">{{ $totalUnread }}</span>
+      @endif
     </a>
 
   </div>
+</div>
 
 
-  {{-- =========================
-          商品一覧（タブごと）
-    ========================== --}}
+{{-- =========================
+      商品一覧
+========================= --}}
+<div class="mypage">
   <div class="mypage__items">
 
     @forelse ($list as $row)
 
     @php
-    // ★ 出品一覧 → row は Item そのもの
-    // ★ 購入一覧 → row は Purchase モデル（item リレーション）
-    // ★ 取引中も Purchase モデル
     $item = isset($row->title) ? $row : ($row->item ?? null);
-
-    // 取引中タブ用
     $purchaseId = $row->id ?? null;
     @endphp
 
     @if ($item)
     <div class="mypage-item">
 
-      {{-- ===============================
-                        UI：カード全体クリック
-                  =============================== --}}
-
       @if ($currentTab === 'transaction')
-      {{-- ◆ 取引中：チャットへ遷移 --}}
       <a href="{{ route('transaction.chat', $purchaseId) }}" class="item-link">
-
         @else
-        {{-- ◆ 出品 or 購入：商品詳細へ遷移 --}}
         <a href="{{ route('items.show', $item->id) }}" class="item-link">
           @endif
 
           <div class="item-thumb">
-            <img src="{{ $item->image_url }}"
-              alt="{{ $item->title }}"
-              class="item-img">
+
+            {{-- ▼ 個別未読数バッジ --}}
+            @if ($currentTab === 'transaction' && isset($row->unread_count) && $row->unread_count > 0)
+            <div class="item-badge">{{ $row->unread_count }}</div>
+            @endif
+
+            <img src="{{ $item->image_url }}" alt="{{ $item->title }}" class="item-img">
           </div>
 
           <div class="product-info">
@@ -116,10 +132,6 @@
     @endif
 
     @empty
-
-    {{-- ===============================
-                    リストが空の場合
-              =============================== --}}
     <div class="muted">
       @if ($currentTab === 'buy')
       購入した商品はありません。
@@ -129,10 +141,9 @@
       まだ出品はありません。
       @endif
     </div>
-
     @endforelse
 
-  </div>{{-- .mypage__items --}}
+  </div>{{-- /.mypage__items --}}
+</div>{{-- /.mypage --}}
 
-</div>{{-- .mypage --}}
 @endsection

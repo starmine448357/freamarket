@@ -17,16 +17,29 @@ class Review extends Model
         'comment',
     ];
 
+    /* ==========================================
+        リレーション
+       ========================================== */
+
+    /**
+     * 紐づく取引（Purchase）
+     */
     public function purchase()
     {
         return $this->belongsTo(Purchase::class);
     }
 
+    /**
+     * レビューを書いたユーザー（reviewer）
+     */
     public function reviewer()
     {
         return $this->belongsTo(User::class, 'reviewer_id');
     }
 
+    /**
+     * レビューの対象ユーザー（target）
+     */
     public function target()
     {
         return $this->belongsTo(User::class, 'target_id');

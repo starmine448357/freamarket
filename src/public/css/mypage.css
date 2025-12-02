@@ -1,20 +1,21 @@
 /* ================================
-   Mypage Styles（完全改訂版）
-   ================================ */
-
+   ルート変数
+================================ */
 :root {
-    --brand: #ff505e;
+    --brand: #FF0000;
     --text: #222;
     --text-sub: #666;
     --line: #ddd;
     --bg-muted: #fafafa;
 }
 
-/* 全体 */
+/* ================================
+   全体
+================================ */
 .mypage {
-    max-width: 960px;
+    max-width: 2000px;
     margin: 0 auto;
-    padding: 24px 16px 60px;
+    padding: 34px 20px 85px;
 }
 
 /* ================================
@@ -22,118 +23,161 @@
 ================================ */
 .mypage__header {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 40px;
-    margin-bottom: 40px;
+    margin-bottom: 5px;
+    margin-top: 50px;
+}
+
+.mypage__left {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+    margin-left: 100px;
+}
+
+.mypage__user-block {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .avatar--lg {
-    width: 120px;
-    height: 120px;
+    width: 170px;
+    height: 170px;
     border-radius: 50%;
     object-fit: cover;
     background: #ccc;
 }
 
-.mypage__info {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 200px;
-}
-
 .mypage__name {
     margin: 0;
-    font-size: 26px;
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 10px;
     font-weight: 800;
     color: var(--text);
 }
 
-/* プロフィール編集ボタン */
 .btn--outline {
     display: inline-block;
     background: #fff;
     color: var(--brand);
-    border: 2px solid var(--brand);
-    border-radius: 6px;
-    font-size: 15px;
+    border: 3px solid var(--brand);
+    border-radius: 10px;
+    font-size: 21px;
+    margin-left: 200px;
+    letter-spacing: 2px;
     font-weight: 700;
-    padding: 10px 22px;
+    padding: 10px 40px;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
     text-decoration: none;
-}
-
-.btn--outline:hover {
-    background: #fff5f6;
 }
 
 /* ================================
-   タブ
+   タブ（幅100vw）
 ================================ */
+.mypage__tabs-wrapper {
+    width: 100vw;
+    position: relative;
+    left: calc(50% - 50vw);
+    background: #fff;
+    margin-top: 10px;
+}
+
+.mypage__tabs-wrapper::after {
+    content: "";
+    display: block;
+    width: 100vw;
+    height: 3px;
+    background: #5F5F5F;
+    position: relative;
+    left: calc(50% - 50vw);
+    margin-top: 3px;
+}
+
 .mypage__tabs {
     display: flex;
-    gap: 40px;
-    margin: 24px 0;
-    border-bottom: 2px solid var(--line);
+    gap: 120px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 60px 20px;
 }
 
 .tab {
-    position: relative;
-    font-size: 16px;
+    font-size: 22px;
     font-weight: 700;
-    padding: 12px 0;
+    padding: 16px 0;
     color: var(--text-sub);
     text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.tab:hover {
-    color: var(--text);
 }
 
 .tab--active {
     color: var(--brand);
 }
 
-.tab--active::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -2px;
-    height: 3px;
-    background: var(--brand);
-    border-radius: 2px;
+.tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 27px;
+    height: 26px;
+    background: #FF0000;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 10px;
+    margin-left: 6px;
+    line-height: 1;
 }
 
 /* ================================
-   商品一覧（Grid）
+   バッジ（商品サムネイル）
 ================================ */
-.mypage__items {
-    margin-top: 32px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 24px;
+.item-thumb {
+    position: relative;
 }
 
-.mypage-item {
-    width: 100%;
+.item-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 25px;
+    height: 25px;
+    background: #FF0000;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+/* ================================
+   商品一覧
+================================ */
+.mypage__items {
+    margin-top: 45px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 60px;
+    justify-items: start;
+    justify-content: start;
 }
 
 .item-link {
     text-decoration: none;
     color: inherit;
     display: block;
-    max-width: 220px;
-    margin: 0 auto;
+    max-width: 260px;
+    margin: 0;
 }
 
 .item-thumb {
     width: 100%;
-    height: 200px;
-    border-radius: 8px;
+    height: 250px;
+    border-radius: 4px;
     overflow: hidden;
     background: #eee;
 }
@@ -142,42 +186,53 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: top;
 }
 
 /* ================================
    商品名・価格
 ================================ */
 .product-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    /* 左揃え */
-    margin-top: 8px;
-    font-size: 14px;
-    font-weight: 600;
+    margin-top: 12px;
+    font-size: 18px;
+    font-weight: 700;
 }
 
 .product-name {
-    margin-bottom: 4px;
-    font-size: 14px;
-    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 18px;
     color: var(--text);
 }
 
 .product-price {
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 800;
     color: var(--text);
 }
 
 /* ================================
-   商品がない場合
+   商品なし
 ================================ */
 .muted {
     color: var(--text-sub);
-    font-size: 14px;
-    margin-top: 16px;
+    font-size: 18px;
+    margin-top: 18px;
     text-align: center;
+}
+
+/* ================================
+   星（レビュー）
+================================ */
+.star {
+    font-size: 38px;
+}
+
+.star--on {
+    color: #FFF048;
+}
+
+.star--off {
+    color: #CCCCCC;
 }
 
 /* ================================
@@ -187,19 +242,19 @@
     .mypage__header {
         flex-direction: column;
         align-items: center;
-        gap: 20px;
+        gap: 24px;
     }
 
-    .mypage__info {
-        flex-direction: column;
-        gap: 12px;
+    .mypage__tabs {
+        padding: 0 30px 16px;
+        gap: 30px;
     }
 
     .mypage__items {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     }
 
     .item-link {
-        max-width: 160px;
+        max-width: 200px;
     }
 }
