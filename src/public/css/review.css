@@ -152,3 +152,107 @@
 .submit-btn:hover {
     opacity: 0.8;
 }
+
+@media (min-width: 768px) and (max-width: 850px) {
+
+    /* サイドバーを上部へ配置 */
+    .transaction-wrapper {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 20px;
+        order: 1;
+    }
+
+    .chat-main {
+        width: 100%;
+        padding: 20px 25px;
+        height: auto;
+        order: 2;
+    }
+
+    /* チャットヘッダー */
+    .chat-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .chat-title {
+        font-size: 32px;
+    }
+
+    .finish-btn {
+        font-size: 18px;
+        padding: 10px 16px;
+    }
+
+    /* 商品情報 */
+    .item-info {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .item-image-box {
+        width: 220px;
+        height: 220px;
+    }
+
+    .item-info-text .item-name {
+        font-size: 40px;
+    }
+
+    .item-price {
+        font-size: 36px;
+    }
+
+    /* メッセージ */
+    .user-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .user-name {
+        font-size: 18px;
+    }
+
+    .bubble {
+        font-size: 18px;
+        padding: 16px 20px;
+        max-width: 400px;
+    }
+
+    /* 送信フォーム */
+    .send-form {
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        gap: 15px;
+    }
+
+    .message-input {
+        height: 60px;
+        font-size: 18px;
+    }
+
+    .image-add-btn {
+        font-size: 18px;
+        padding: 8px 12px;
+    }
+
+    .send-icon {
+        width: 60px;
+    }
+
+    /* バリデーションの位置調整 */
+    .chat-error-box {
+        left: 20px;
+        right: 20px;
+        bottom: 100px;
+    }
+}

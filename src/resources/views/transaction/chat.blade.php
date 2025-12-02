@@ -12,7 +12,7 @@
     @php
     $me = Auth::user();
     $isSeller = ($purchase->item->user_id === $me->id);
-    $editingId = old('editing_id');
+    $editingId = request('editing_id');
     @endphp
 
     {{-- =======================
@@ -175,13 +175,10 @@
                     <div class="msg-actions">
 
                         {{-- 編集ボタン --}}
-                        <form action="{{ route('transaction.chat', $purchase->id) }}"
-                            method="POST"
-                            class="edit-trigger-form">
-                            @csrf
-                            <input type="hidden" name="editing_id" value="{{ $msg->id }}">
-                            <button type="submit" class="msg-edit">編集</button>
-                        </form>
+                        <a href="{{ route('transaction.chat', ['purchaseId' => $purchase->id, 'editing_id' => $msg->id]) }}"
+                            class="msg-edit">
+                            編集
+                        </a>
 
                         {{-- 削除ボタン --}}
                         <form action="{{ route('transaction.chat.delete', [$purchase->id, $msg->id]) }}"
