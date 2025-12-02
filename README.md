@@ -17,12 +17,12 @@
 3. cp .env.example .env
 4. .env を以下に修正：
 
-DB_CONNECTION=mysql  
-DB_HOST=mysql  
-DB_PORT=3306  
-DB_DATABASE=laravel_db  
-DB_USERNAME=laravel_user  
-DB_PASSWORD=laravel_pass  
+ DB_CONNECTION=mysql  
+ DB_HOST=mysql  
+ DB_PORT=3306  
+ DB_DATABASE=laravel_db  
+ DB_USERNAME=laravel_user  
+ DB_PASSWORD=laravel_pass  
 
 5. php artisan key:generate  
 6. php artisan migrate:fresh --seed  
