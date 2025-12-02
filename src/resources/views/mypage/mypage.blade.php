@@ -9,17 +9,22 @@
 
 <div class="mypage">
 
+  {{-- ===============================
+       ヘッダー
+  ================================ --}}
   <div class="mypage__header">
 
     <div class="mypage__left">
+
       <img
         src="{{ auth()->user()->profile_image_path
-                      ? asset('storage/'.auth()->user()->profile_image_path)
-                      : asset('images/default-avatar.png') }}"
+                  ? asset('storage/'.auth()->user()->profile_image_path)
+                  : asset('images/default-avatar.png') }}"
         alt=""
         class="avatar avatar--lg">
 
       <div class="mypage__user-block">
+
         <h1 class="mypage__name">{{ auth()->user()->name }}</h1>
 
         @if(!empty($ratingAvgRounded))
@@ -29,6 +34,7 @@
             @endfor
         </div>
         @endif
+
       </div>
     </div>
 
@@ -37,51 +43,62 @@
     </a>
 
   </div>
-</div>
 
-@php
-$currentTab = request('tab', 'sell');
 
-if ($currentTab === 'buy') {
-$list = $purchasedItems ?? [];
-} elseif ($currentTab === 'transaction') {
-$list = $transactionItems ?? [];
-} else {
-$list = $sellingItems ?? [];
-}
-@endphp
+  {{-- ===============================
+       タブ制御
+  ================================ --}}
+  @php
+  $currentTab = request('tab', 'sell');
 
-<div class="mypage__tabs-wrapper">
-  <div class="mypage__tabs">
+  if ($currentTab === 'buy') {
+  $list = $purchasedItems ?? [];
+  } elseif ($currentTab === 'transaction') {
+  $list = $transactionItems ?? [];
+  } else {
+  $list = $sellingItems ?? [];
+  }
+  @endphp
 
-    <a href="{{ route('mypage', ['tab'=>'sell']) }}"
-      class="tab {{ $currentTab==='sell' ? 'tab--active' : '' }}">
-      出品した商品
-    </a>
 
-    <a href="{{ route('mypage', ['tab'=>'buy']) }}"
-      class="tab {{ $currentTab==='buy' ? 'tab--active' : '' }}">
-      購入した商品
-    </a>
+  {{-- ===============================
+       タブ表示
+  ================================ --}}
+  <div class="mypage__tabs-wrapper">
+    <div class="mypage__tabs">
 
-    <a href="{{ route('mypage', ['tab'=>'transaction']) }}"
-      class="tab {{ $currentTab==='transaction' ? 'tab--active' : '' }}">
-      取引中の商品
+      <a href="{{ route('mypage', ['tab'=>'sell']) }}"
+        class="tab {{ $currentTab==='sell' ? 'tab--active' : '' }}">
+        出品した商品
+      </a>
 
-      @if(isset($totalUnread) && $totalUnread > 0)
-      <span class="tab-badge">{{ $totalUnread }}</span>
-      @endif
-    </a>
+      <a href="{{ route('mypage', ['tab'=>'buy']) }}"
+        class="tab {{ $currentTab==='buy' ? 'tab--active' : '' }}">
+        購入した商品
+      </a>
 
+      <a href="{{ route('mypage', ['tab'=>'transaction']) }}"
+        class="tab {{ $currentTab==='transaction' ? 'tab--active' : '' }}">
+        取引中の商品
+
+        @if(isset($totalUnread) && $totalUnread > 0)
+        <span class="tab-badge">{{ $totalUnread }}</span>
+        @endif
+      </a>
+
+    </div>
   </div>
-</div>
 
-<div class="mypage">
+
+  {{-- ===============================
+       商品一覧
+  ================================ --}}
   <div class="mypage__items">
 
     @forelse ($list as $row)
 
     @php
+    // row: sell → Item, buy/transaction → Purchase
     $item = isset($row->title) ? $row : ($row->item ?? null);
     $purchaseId = $row->id ?? null;
     @endphp
@@ -89,6 +106,7 @@ $list = $sellingItems ?? [];
     @if ($item)
     <div class="mypage-item">
 
+      {{-- ▼ 商品リンク（タブによって遷移先を分岐） --}}
       @if ($currentTab === 'transaction')
       <a href="{{ route('transaction.chat', $purchaseId) }}" class="item-link">
         @else
@@ -97,7 +115,10 @@ $list = $sellingItems ?? [];
 
           <div class="item-thumb">
 
-            @if ($currentTab === 'transaction' && isset($row->unread_count) && $row->unread_count > 0)
+            {{-- ▼ 未読バッジ --}}
+            @if ($currentTab === 'transaction'
+            && isset($row->unread_count)
+            && $row->unread_count > 0)
             <div class="item-badge">{{ $row->unread_count }}</div>
             @endif
 
@@ -106,7 +127,9 @@ $list = $sellingItems ?? [];
 
           <div class="product-info">
             <div class="product-name">{{ $item->title }}</div>
-            <div class="product-price">¥{{ number_format($item->price) }}</div>
+            <div class="product-price">
+              ¥{{ number_format($item->price) }}
+            </div>
           </div>
 
         </a>
@@ -115,18 +138,20 @@ $list = $sellingItems ?? [];
     @endif
 
     @empty
+
     <div class="muted">
       @if ($currentTab === 'buy')
       購入した商品はありません。
-      @elseif($currentTab === 'transaction')
+      @elseif ($currentTab === 'transaction')
       取引中の商品はありません。
       @else
       まだ出品はありません。
       @endif
     </div>
+
     @endforelse
 
   </div>
-</div>
 
+</div> 
 @endsection
