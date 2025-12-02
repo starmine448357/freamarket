@@ -7,14 +7,10 @@
 
 @section('content')
 
-{{-- =========================
-        プロフィールブロック
-========================= --}}
 <div class="mypage">
 
   <div class="mypage__header">
 
-    {{-- ▼ 左：アイコン＋名前＋星 --}}
     <div class="mypage__left">
       <img
         src="{{ auth()->user()->profile_image_path
@@ -36,17 +32,14 @@
       </div>
     </div>
 
-    {{-- ▼ 右：プロフィール編集 --}}
     <a href="{{ route('mypage.profile.edit') }}" class="btn btn--outline">
       プロフィールを編集
     </a>
 
-  </div>{{-- /.mypage__header --}}
-</div>{{-- /.mypage --}}
-
+  </div>
+</div>
 
 @php
-// ★ デフォルトは出品した商品タブ
 $currentTab = request('tab', 'sell');
 
 if ($currentTab === 'buy') {
@@ -58,10 +51,6 @@ $list = $sellingItems ?? [];
 }
 @endphp
 
-
-{{-- =========================
-      タブ（全幅）
-========================= --}}
 <div class="mypage__tabs-wrapper">
   <div class="mypage__tabs">
 
@@ -79,7 +68,6 @@ $list = $sellingItems ?? [];
       class="tab {{ $currentTab==='transaction' ? 'tab--active' : '' }}">
       取引中の商品
 
-      {{-- ▼ タブ横の総未読数 --}}
       @if(isset($totalUnread) && $totalUnread > 0)
       <span class="tab-badge">{{ $totalUnread }}</span>
       @endif
@@ -88,10 +76,6 @@ $list = $sellingItems ?? [];
   </div>
 </div>
 
-
-{{-- =========================
-      商品一覧
-========================= --}}
 <div class="mypage">
   <div class="mypage__items">
 
@@ -113,7 +97,6 @@ $list = $sellingItems ?? [];
 
           <div class="item-thumb">
 
-            {{-- ▼ 個別未読数バッジ --}}
             @if ($currentTab === 'transaction' && isset($row->unread_count) && $row->unread_count > 0)
             <div class="item-badge">{{ $row->unread_count }}</div>
             @endif
@@ -143,7 +126,7 @@ $list = $sellingItems ?? [];
     </div>
     @endforelse
 
-  </div>{{-- /.mypage__items --}}
-</div>{{-- /.mypage --}}
+  </div>
+</div>
 
 @endsection

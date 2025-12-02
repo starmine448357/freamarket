@@ -10,8 +10,8 @@ class Purchase extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',              
-        'buyer_id',            
+        'user_id',
+        'buyer_id',
         'item_id',
         'amount',
         'payment_method',
@@ -56,5 +56,10 @@ class Purchase extends Model
     public function messages()
     {
         return $this->hasMany(\App\Models\TransactionMessage::class);
+    }
+
+    public function reads()
+    {
+        return $this->hasMany(PurchaseUserRead::class);
     }
 }
