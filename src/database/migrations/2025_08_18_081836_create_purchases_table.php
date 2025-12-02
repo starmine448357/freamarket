@@ -10,6 +10,11 @@ return new class extends Migration {
         Schema::create('purchases', function (Blueprint $table) {
             $table->id();
 
+            // 出品者
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->onDelete('cascade');
+
             // 購入者
             $table->foreignId('buyer_id')
                 ->constrained('users')

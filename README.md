@@ -17,16 +17,20 @@
 3. cp .env.example .env
 4. .env を以下に修正：
 
-DB_HOST=mysql  
-DB_PORT=3306  
-DB_DATABASE=laravel_db  
-DB_USERNAME=laravel_user  
-DB_PASSWORD=laravel_pass  
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel_db
+DB_USERNAME=laravel_user
+DB_PASSWORD=laravel_pass
 
 5. php artisan key:generate  
 6. php artisan migrate:fresh --seed  
 7. php artisan storage:link  
 
+8. 本リポジトリに含まれる .env.example の Stripe API キーは ダミー値 です。
+ご自身の環境で動作確認を行う場合は、Stripe ダッシュボードで発行される
+テスト用 API キー（Publishable key / Secret key） を .env に設定してください。
 ---
 
 ## 初期データ（ダミーデータ）
@@ -144,6 +148,7 @@ DB_PASSWORD=laravel_pass
 | カラム名 | 型 | PK | UNIQUE | NOT NULL | FK |
 |---------|----|----|--------|----------|----|
 | id | bigint | ○ | | ○ | |
+| user_id | bigint | | | ○ | ○ users.id |
 | buyer_id | bigint | | | ○ | ○ users.id |
 | item_id | bigint | | | ○ | ○ items.id |
 | payment_method | varchar(20) | | | ○ | |
