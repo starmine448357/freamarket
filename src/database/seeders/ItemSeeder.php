@@ -31,7 +31,9 @@ class ItemSeeder extends Seeder
                 'name' => '出品者A',
                 'password' => bcrypt('password'),
                 'email_verified_at' => now(),
-
+                'postal_code' => '123-4567',
+                'address'     => '東京都渋谷区テスト1-2-3',
+                'building'    => 'テストマンション101',
             ]
             
         );
@@ -42,8 +44,9 @@ class ItemSeeder extends Seeder
                 'name' => '出品者B',
                 'password' => bcrypt('password'),
                 'email_verified_at' => now(),
-
-            ]
+                'postal_code' => '123-4567',
+                'address'     => '東京都渋谷区テスト1-2-3',
+                'building'    => 'テストマンション101',            ]
         );
 
         // 出品なしユーザー（C）
@@ -53,8 +56,9 @@ class ItemSeeder extends Seeder
                 'name' => 'ユーザーC',
                 'password' => bcrypt('password'),
                 'email_verified_at' => now(),
-
-            ]
+                'postal_code' => '987-6543',
+                'address'     => '大阪府大阪市サンプル7-8-9',
+                'building'    => 'サンプルビル303',            ]
         );
 
         // ============================================================

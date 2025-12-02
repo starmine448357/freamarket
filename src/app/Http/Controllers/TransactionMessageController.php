@@ -53,9 +53,9 @@ class TransactionMessageController extends Controller
             ->get();
 
         // -------------------------------------------------
-        // ▼ サイドバー用：取引中一覧
+        // ▼ サイドバー用：取引中一覧（★ マイページと同じ条件に統一）
         // -------------------------------------------------
-        $relatedPurchases = Purchase::with('item')
+        $relatedPurchases = Purchase::with(['item', 'messages'])
             ->where(function ($q) use ($user) {
 
                 // 購入者 → pending
@@ -72,8 +72,34 @@ class TransactionMessageController extends Controller
                         ->whereIn('status', ['pending', 'buyer_reviewed']);
                 });
             })
-            ->orderBy('created_at', 'desc')
             ->get();
+
+        // -------------------------------------------------
+        // ▼ サイドバー：未読数を計算
+        // -------------------------------------------------
+        foreach ($relatedPurchases as $p) {
+
+            $lastReadAt = PurchaseUserRead::where('purchase_id', $p->id)
+                ->where('user_id', $user->id)
+                ->value('last_read_at');
+
+            $p->unread_count = TransactionMessage::where('purchase_id', $p->id)
+                ->when($lastReadAt, fn($q) => $q->where('created_at', '>', $lastReadAt))
+                ->where('user_id', '!=', $user->id)
+                ->count();
+        }
+
+        // -------------------------------------------------
+        // ▼ サイドバー：並び替え（★ マイページと同じロジック）
+        // -------------------------------------------------
+        $relatedPurchases = $relatedPurchases
+            ->sortByDesc(function ($p) {
+                return [
+                    $p->unread_count > 0 ? 1 : 0,                       // 未読優先
+                    optional($p->messages()->latest()->first())->created_at, // 最新メッセージ順
+                ];
+            })
+            ->values();
 
         return view('transaction.chat', compact(
             'purchase',
@@ -176,8 +202,6 @@ class TransactionMessageController extends Controller
             'message'     => $request->message,
             'image_path'  => $imagePath,
         ]);
-
-        // ★ ドラフト機能は localStorage → サーバー側は何もしない
 
         return redirect()->route('transaction.chat', $purchaseId);
     }
