@@ -50,7 +50,7 @@ class ItemSeeder extends Seeder
         $userC = User::firstOrCreate(
             ['email' => 'userC@example.com'],
             [
-                'name' => 'ユーザーC（出品なし）',
+                'name' => 'ユーザーC',
                 'password' => bcrypt('password'),
                 'email_verified_at' => now(),
 

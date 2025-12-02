@@ -40,7 +40,7 @@
 |------|--------|------|
 | 出品者A | sellerA@example.com | 出品者 |
 | 出品者B | sellerB@example.com | 出品者 |
-| 出品者C | sellerC@example.com | 出品者 |
+| 出品者C | userC@example.com| 出品なし |
 
 ※ パスワードは全員 `password`
 
